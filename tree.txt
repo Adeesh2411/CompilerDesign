@@ -1,0 +1,8 @@
+Start,nextPart
+Start,header
+nextPart,nextPart1
+nextPart,declarations
+declarations,x
+declarations,int x=0;
+header,#include<stdio.h>
+header,#include<stdlib.h>

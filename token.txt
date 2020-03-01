@@ -1,0 +1,5 @@
+<int keyword>
+<x Identifier>
+<= ASSIGN>
+<10 Numeric>
+<; punc>
