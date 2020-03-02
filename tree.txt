@@ -1,8 +1,9 @@
 Start,nextPart
 Start,header
-nextPart,nextPart1
+nextPart,nextPart
 nextPart,declarations
 declarations,x
 declarations,int x=0;
 header,#include<stdio.h>
 header,#include<stdlib.h>
+header,#include<string.h>

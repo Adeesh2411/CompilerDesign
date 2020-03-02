@@ -25,6 +25,7 @@ program : header  nextPart{
              strcpy(treeArr[tk-1].child, "header");
              strcpy(treeArr[tk++].Parent,"Start");
              strcpy(treeArr[tk-1].child, "nextPart");
+
              printf("\nDone\n");
              displayTable();
              displayTree();             
@@ -48,13 +49,17 @@ header : HEADER
        
 nextPart 
     :declaration  nextPart 
+    {        
+        strcpy(treeArr[tk++].Parent,"nextPart");
+        strcpy(treeArr[tk-1].child, "declarations");
+        strcpy(treeArr[tk++].Parent,"nextPart"); 
+        strcpy(treeArr[tk-1].child, "nextPart"); 
+    }
+    |function nextPart
     {
         strcpy(treeArr[tk++].Parent,"nextPart");
         strcpy(treeArr[tk-1].child, "declarations");
-        strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "nextPart1");
     }
-    |function nextPart
     |
     ;
 

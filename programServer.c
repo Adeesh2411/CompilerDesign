@@ -227,3 +227,11 @@ void displayTree(){
         fprintf(treeFile, "%s,%s\n",treeArr[i].Parent, treeArr[i].child);
     }
 }
+
+char* intToStr(char* s, int n){
+    char temp[20];
+    strcpy(tempArr, s);
+    sprintf(temp, "%d", n);
+    strcat(tempArr, temp);
+    return tempArr;    
+}

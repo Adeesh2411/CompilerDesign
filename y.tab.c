@@ -597,14 +597,14 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    23,    23,    35,    40,    50,    57,    58,    64,   105,
-     116,   121,   135,   142,   149,   164,   165,   166,   167,   170,
-     174,   184,   185,   186,   190,   194,   199,   205,   206,   207,
-     211,   218,   219,   223,   229,   230,   234,   235,   236,   237,
-     240,   241,   245,   246,   249,   250,   251,   252,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   280,   284,   288,   292,   298,
-     304,   309,   310,   313,   314,   319,   323,   324,   325
+       0,    23,    23,    36,    41,    51,    58,    63,    69,   110,
+     121,   126,   140,   147,   154,   169,   170,   171,   172,   175,
+     179,   189,   190,   191,   195,   199,   204,   210,   211,   212,
+     216,   223,   224,   228,   234,   235,   239,   240,   241,   242,
+     245,   246,   250,   251,   254,   255,   256,   257,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   270,   271,   272,
+     273,   274,   275,   276,   277,   285,   289,   293,   297,   303,
+     309,   314,   315,   318,   319,   324,   328,   329,   330
 };
 #endif
 
@@ -1523,44 +1523,54 @@ yyreduce:
              strcpy(treeArr[tk-1].child, "header");
              strcpy(treeArr[tk++].Parent,"Start");
              strcpy(treeArr[tk-1].child, "nextPart");
+
              printf("\nDone\n");
              displayTable();
              displayTree();             
          }
-#line 1531 "y.tab.c"
+#line 1532 "y.tab.c"
     break;
 
   case 3:
-#line 36 "program.y"
+#line 37 "program.y"
         {
             strcpy(treeArr[tk++].Parent,"header");
             strcpy(treeArr[tk-1].child, (yyvsp[0].txt));
         }
-#line 1540 "y.tab.c"
+#line 1541 "y.tab.c"
     break;
 
   case 4:
-#line 41 "program.y"
+#line 42 "program.y"
         {
             strcpy(treeArr[tk++].Parent,"header");
             strcpy(treeArr[tk-1].child, (yyvsp[-1].txt));
         }
-#line 1549 "y.tab.c"
+#line 1550 "y.tab.c"
     break;
 
   case 5:
-#line 51 "program.y"
+#line 52 "program.y"
+    {        
+        strcpy(treeArr[tk++].Parent,"nextPart");
+        strcpy(treeArr[tk-1].child, "declarations");
+        strcpy(treeArr[tk++].Parent,"nextPart"); 
+        strcpy(treeArr[tk-1].child, "nextPart"); 
+    }
+#line 1561 "y.tab.c"
+    break;
+
+  case 6:
+#line 59 "program.y"
     {
         strcpy(treeArr[tk++].Parent,"nextPart");
         strcpy(treeArr[tk-1].child, "declarations");
-        strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "nextPart1");
     }
-#line 1560 "y.tab.c"
+#line 1570 "y.tab.c"
     break;
 
   case 8:
-#line 64 "program.y"
+#line 69 "program.y"
                               {
         
             if(!comaflag){
@@ -1601,11 +1611,11 @@ yyreduce:
     strcpy(treeArr[tk++].Parent,"declarations");
     strcpy(treeArr[tk-1].child, (yyvsp[-1].txt));
     }
-#line 1605 "y.tab.c"
+#line 1615 "y.tab.c"
     break;
 
   case 9:
-#line 106 "program.y"
+#line 111 "program.y"
     {
         if(!checkTableToAccess((yyvsp[-3].txt))){
             printf("ERROR : Undclared Type \'%s\' in Line No %d\n",(yyvsp[-3].txt), lineNo);
@@ -1614,17 +1624,17 @@ yyreduce:
             insert("", (yyvsp[-3].txt), (yyvsp[-1].txt), 2); // flag 2 for updating variable.
         }
     }
-#line 1618 "y.tab.c"
+#line 1628 "y.tab.c"
     break;
 
   case 10:
-#line 116 "program.y"
+#line 121 "program.y"
                      {strcpy(prevToken, curToken); strcpy(curToken, "");}
-#line 1624 "y.tab.c"
+#line 1634 "y.tab.c"
     break;
 
   case 11:
-#line 121 "program.y"
+#line 126 "program.y"
                               { 
 	    if(!comaflag){
       	    strcpy(T.name,(yyvsp[-2].txt));
@@ -1639,33 +1649,33 @@ yyreduce:
 	    }   
 	    
 	}
-#line 1643 "y.tab.c"
+#line 1653 "y.tab.c"
     break;
 
   case 12:
-#line 136 "program.y"
+#line 141 "program.y"
         {
 	    comaflag = 1;   
 	    strcpy(Tarr[ck++].name,(yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	    
 	}
-#line 1654 "y.tab.c"
+#line 1664 "y.tab.c"
     break;
 
   case 13:
-#line 142 "program.y"
+#line 147 "program.y"
                                              {
 	    comaflag = 1;
 	    strcpy(Tarr[ck++].name,(yyvsp[-4].txt));
 	    strcpy(Tarr[ck-1].value, (yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	}
-#line 1665 "y.tab.c"
+#line 1675 "y.tab.c"
     break;
 
   case 14:
-#line 149 "program.y"
+#line 154 "program.y"
                    {
 	    if(!comaflag){
     	    strcpy(T.name , (yyvsp[0].txt));
@@ -1676,35 +1686,35 @@ yyreduce:
 	        Tarr[ck-1].dflag = 4;
 	    }    
 	    }
-#line 1680 "y.tab.c"
+#line 1690 "y.tab.c"
     break;
 
   case 15:
-#line 164 "program.y"
+#line 169 "program.y"
          {typeValue = 1; }
-#line 1686 "y.tab.c"
+#line 1696 "y.tab.c"
     break;
 
   case 16:
-#line 165 "program.y"
+#line 170 "program.y"
           { typeValue = 4;}
-#line 1692 "y.tab.c"
+#line 1702 "y.tab.c"
     break;
 
   case 17:
-#line 166 "program.y"
+#line 171 "program.y"
             { typeValue = 3;}
-#line 1698 "y.tab.c"
+#line 1708 "y.tab.c"
     break;
 
   case 18:
-#line 167 "program.y"
+#line 172 "program.y"
            { typeValue = 2;}
-#line 1704 "y.tab.c"
+#line 1714 "y.tab.c"
     break;
 
   case 20:
-#line 174 "program.y"
+#line 179 "program.y"
               {
         if(!checkTableToAccess((yyvsp[0].txt))){
             printf("ERROR : variable \'%s\' not defined in lineNo %d\n",(yyvsp[0].txt),lineNo);
@@ -1715,137 +1725,137 @@ yyreduce:
             strcpy((yyval.txt), getValue((yyvsp[0].txt)));
         }
     }
-#line 1719 "y.tab.c"
+#line 1729 "y.tab.c"
     break;
 
   case 23:
-#line 186 "program.y"
+#line 191 "program.y"
          {(yyval.txt) = (yyvsp[0].txt);}
-#line 1725 "y.tab.c"
+#line 1735 "y.tab.c"
     break;
 
   case 24:
-#line 190 "program.y"
+#line 195 "program.y"
                   {
          (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 1);
         
     }
-#line 1734 "y.tab.c"
+#line 1744 "y.tab.c"
     break;
 
   case 25:
-#line 194 "program.y"
+#line 199 "program.y"
                   {
         {
             (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 2);
         }
     }
-#line 1744 "y.tab.c"
+#line 1754 "y.tab.c"
     break;
 
   case 26:
-#line 199 "program.y"
+#line 204 "program.y"
            {
         strcpy((yyval.txt), (yyvsp[0].txt));
     }
-#line 1752 "y.tab.c"
+#line 1762 "y.tab.c"
     break;
 
   case 27:
-#line 205 "program.y"
+#line 210 "program.y"
                    {  (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 3);  }
-#line 1758 "y.tab.c"
+#line 1768 "y.tab.c"
     break;
 
   case 28:
-#line 206 "program.y"
+#line 211 "program.y"
                    { (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 4);}
-#line 1764 "y.tab.c"
+#line 1774 "y.tab.c"
     break;
 
   case 29:
-#line 207 "program.y"
+#line 212 "program.y"
          { 
         strcpy((yyval.txt),(yyvsp[0].txt));
     }
-#line 1772 "y.tab.c"
+#line 1782 "y.tab.c"
     break;
 
   case 30:
-#line 211 "program.y"
+#line 216 "program.y"
                {
         
         strcpy((yyval.txt), (yyvsp[-1].txt));
     }
-#line 1781 "y.tab.c"
+#line 1791 "y.tab.c"
     break;
 
   case 31:
-#line 218 "program.y"
+#line 223 "program.y"
          {strcpy((yyval.txt), (yyvsp[0].txt));}
-#line 1787 "y.tab.c"
+#line 1797 "y.tab.c"
     break;
 
   case 32:
-#line 219 "program.y"
+#line 224 "program.y"
                 {strcpy((yyval.txt),(yyvsp[-1].txt));}
-#line 1793 "y.tab.c"
+#line 1803 "y.tab.c"
     break;
 
   case 33:
-#line 224 "program.y"
+#line 229 "program.y"
     {
         insert((yyvsp[-8].txt),(yyvsp[-7].txt),"--",3 );
     }
-#line 1801 "y.tab.c"
+#line 1811 "y.tab.c"
     break;
 
   case 64:
-#line 273 "program.y"
+#line 278 "program.y"
     {
         insert((yyvsp[-3].txt), (yyvsp[-2].txt), (yyvsp[0].txt), 4);
     }
-#line 1809 "y.tab.c"
+#line 1819 "y.tab.c"
     break;
 
   case 66:
-#line 285 "program.y"
+#line 290 "program.y"
     {
         insert((yyvsp[-5].txt), (yyvsp[-4].txt), (yyvsp[-2].txt), 4);
     }
-#line 1817 "y.tab.c"
+#line 1827 "y.tab.c"
     break;
 
   case 67:
-#line 289 "program.y"
+#line 294 "program.y"
     {
          insert((yyvsp[-3].txt), (yyvsp[-2].txt), (yyvsp[0].txt), 4);
     }
-#line 1825 "y.tab.c"
+#line 1835 "y.tab.c"
     break;
 
   case 68:
-#line 293 "program.y"
+#line 298 "program.y"
     {
         if(checkTableToAccess((yyvsp[-4].txt))){}
         else
             printf("ERROR : undefined variable \'%s\' in line No %d\n",(yyvsp[-4].txt), lineNo);
     }
-#line 1835 "y.tab.c"
+#line 1845 "y.tab.c"
     break;
 
   case 69:
-#line 299 "program.y"
+#line 304 "program.y"
     {
         if(checkTableToAccess((yyvsp[-2].txt))){}
         else
             printf("ERROR : undefined variable \'%s\' in line No %d\n",(yyvsp[-2].txt), lineNo);
     }
-#line 1845 "y.tab.c"
+#line 1855 "y.tab.c"
     break;
 
 
-#line 1849 "y.tab.c"
+#line 1859 "y.tab.c"
 
       default: break;
     }
@@ -2077,7 +2087,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 328 "program.y"
+#line 333 "program.y"
 
 
 

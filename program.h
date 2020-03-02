@@ -72,6 +72,7 @@
 	
 	//for tree
 	int np = 0;
+	int fnp=0;
 	int tk=0;
 	struct Tree{
 	    char Parent[30];
@@ -91,5 +92,5 @@
 	void update(char *name, char* val); // to update the current value of name with value
 	char *correct(char *val, char *type); //to correct the number of perticular type
 	void displayTree(); // for printing AST
-	
+	char* intToStr(char* s, int n); //for AST same name
 	
