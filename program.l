@@ -96,7 +96,6 @@ End   \*\/
 {alpha}({alpha}|{digit})*       {yylval.txt=strdup(yytext); generateToken(yylval.txt, "Identifier", -1);return IDE;}
 
 {digit}+                        {yylval.txt=strdup(yytext); generateToken(yylval.txt, "Numeric", -1);return NUM;}
-{digit}*\.{digit}+{exp}?        {yylval.txt=strdup(yytext);return REAL;}
 {digit}+\.{digit}*{exp}?        {yylval.txt=strdup(yytext);return REAL;}
 
 
