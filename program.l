@@ -18,7 +18,7 @@
 %}
 
 
-alpha [a-zA-Z]
+alpha [_a-zA-Z]
 digit [0-9]
 exp   (E|e){digit}+
 Start \/\*
@@ -42,7 +42,7 @@ End   \*\/
 "&&"    {yylval.txt=strdup(yytext);generateToken("&&","AND",-1);return AND;}
 "||"    {yylval.txt=strdup(yytext);generateToken("||","OR",-1);return OR;}
 "&"     {yylval.txt = strdup(yytext); generateToken("&","Logical And",-1); return LAND;}
-"|"     {yylval.txt = strdup(yytext); generateToken("&","Logical Or",-1); return LOR;}
+"|"     {yylval.txt = strdup(yytext); generateToken("|","Logical Or",-1); return LOR;}
 "++"    {yylval.txt=strdup(yytext); generateToken("++","INC",-1);return INC;}
 "--"    {yylval.txt=strdup(yytext);generateToken("--","DEC",-1);return DEC;}
 "^"     {yylval.txt=strdup(yytext);generateToken("^","XOR",-1);return XOR;}
