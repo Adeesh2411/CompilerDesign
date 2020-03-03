@@ -224,7 +224,7 @@ char *correct(char *val, char *type){
 
 void displayTree(){
     for(int i=tk-1; i>=0; i--){
-        fprintf(treeFile, "%s,%s\n",treeArr[i].Parent, treeArr[i].child);
+        fprintf(treeFile, "%d,%s,%s,%d\n",treeArr[i].level,treeArr[i].Parent, treeArr[i].child, treeArr[i].isT);
     }
 }
 
@@ -234,4 +234,32 @@ char* intToStr(char* s, int n){
     sprintf(temp, "%d", n);
     strcat(tempArr, temp);
     return tempArr;    
+}
+
+void insertNode(char *type, char *name, char *op, char* val, char* parent,bool temp){
+   ++np;
+   int x = np;
+   if(temp){ //inside function..
+        x=np+2;
+   }
+   
+   strcpy(treeArr[tk++].Parent,parent);
+   strcpy(treeArr[tk-1].child, val);
+   treeArr[tk-1].level = x;
+   treeArr[tk-1].isT = true;
+   
+   strcpy(treeArr[tk++].Parent,parent);
+   strcpy(treeArr[tk-1].child, op);
+   treeArr[tk-1].level = x;
+   treeArr[tk-1].isT = true;  
+
+    strcpy(treeArr[tk++].Parent,parent);
+   strcpy(treeArr[tk-1].child, name);
+   treeArr[tk-1].level = x;
+   treeArr[tk-1].isT = true;
+
+    strcpy(treeArr[tk++].Parent,parent);
+   strcpy(treeArr[tk-1].child, type);
+   treeArr[tk-1].level = x;
+   treeArr[tk-1].isT = true;
 }

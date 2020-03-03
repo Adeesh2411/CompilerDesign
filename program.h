@@ -1,6 +1,7 @@
 	#include<stdio.h>
 	#include<stdlib.h>
 	#include<string.h>
+	#include<stdbool.h>
 	#include "y.tab.h"
 	extern int semiFlag;
 	void yy_flush_buffer();
@@ -58,6 +59,7 @@
 	 }T,Tarr[20];
 	   
 	   
+	bool funcFlag;
 	   
 	struct dtemp{
 	    char name[20];
@@ -77,6 +79,8 @@
 	struct Tree{
 	    char Parent[30];
 	    char child[30];
+	    int level;
+	    bool isT;
 	}treeArr[200];
 	
 	
@@ -93,4 +97,4 @@
 	char *correct(char *val, char *type); //to correct the number of perticular type
 	void displayTree(); // for printing AST
 	char* intToStr(char* s, int n); //for AST same name
-	
+	void insertNode(char *, char*, char *,char*,char*,bool); //for inserting node to a tree

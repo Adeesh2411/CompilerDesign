@@ -14,18 +14,23 @@
 %token<txt> SEMICOLON COMMA 
 %token<txt> OP CP OB CB LOR LAND
 %type<txt> exp exp1 lhs exp2 condExp
-%type<txt> type assignList variable
+%type<txt> type assignList variable funcVariable
 %start program
 
 
 
 %%
 program : header  nextPart{
+                
              strcpy(treeArr[tk++].Parent,"Start");
              strcpy(treeArr[tk-1].child, "header");
+             treeArr[tk-1].level = --np;
+             treeArr[tk-1].isT = false;
+             
              strcpy(treeArr[tk++].Parent,"Start");
              strcpy(treeArr[tk-1].child, "nextPart");
-
+             treeArr[tk-1].level = np;
+             treeArr[tk-1].isT = false;
              printf("\nDone\n");
              displayTable();
              displayTree();             
@@ -37,11 +42,15 @@ header : HEADER
         {
             strcpy(treeArr[tk++].Parent,"header");
             strcpy(treeArr[tk-1].child, $1);
+            treeArr[tk-1].level = -2;
+            treeArr[tk-1].isT = true;
         }
         |HEADER header 
         {
             strcpy(treeArr[tk++].Parent,"header");
             strcpy(treeArr[tk-1].child, $1);
+            treeArr[tk-1].level = -2;
+            treeArr[tk-1].isT = true;
         }
        ;
        
@@ -49,16 +58,30 @@ header : HEADER
        
 nextPart 
     :declaration  nextPart 
-    {        
+    {       
         strcpy(treeArr[tk++].Parent,"nextPart");
         strcpy(treeArr[tk-1].child, "declarations");
+        treeArr[tk-1].level = --np;
+        treeArr[tk-1].isT = false;
+        
         strcpy(treeArr[tk++].Parent,"nextPart"); 
         strcpy(treeArr[tk-1].child, "nextPart"); 
+        treeArr[tk-1].level = np;
+        treeArr[tk-1].isT = false;
     }
     |function nextPart
     {
         strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "declarations");
+        strcpy(treeArr[tk-1].child, "nextPart");
+        treeArr[tk-1].level = --np;
+        treeArr[tk-1].isT = false;
+        funcFlag = false;
+        
+        strcpy(treeArr[tk++].Parent,"nextPart");
+        strcpy(treeArr[tk-1].child, "functions");
+        treeArr[tk-1].level = np;
+        treeArr[tk-1].isT = false;
+        funcFlag = false;
     }
     |
     ;
@@ -100,11 +123,8 @@ declaration
                     insert($1,T.name,getValue(T.value), 1);
                     ck=0;comaflag=0;
                 }          
-            }
-    strcpy(treeArr[tk++].Parent,"declarations");
-    strcpy(treeArr[tk-1].child, "int x=0;");
-    strcpy(treeArr[tk++].Parent,"declarations");
-    strcpy(treeArr[tk-1].child, $2);
+            }       
+            insertNode($1, T.name, "=",T.value,"declarations",funcFlag);
     }
     
     | variable ASSIGN exp SEMICOLON
@@ -134,8 +154,9 @@ assignList
 	        strcpy(Tarr[ck++].name , $1);
 	        strcpy(Tarr[ck-1].value, $3);
 	        Tarr[ck-1].dflag = 2;
-	    }   
+	    }
 	    
+        
 	}
 	| variable COMMA assignList
 	{
@@ -166,7 +187,7 @@ assignList
 	
 
 type
-    :INT {typeValue = 1; }
+    :INT {}
     |CHAR { typeValue = 4;}
     |DOUBLE { typeValue = 3;}
     |FLOAT { typeValue = 2;}
@@ -225,10 +246,37 @@ exp2
     ;
 
 function
-    :type variable OP funcPara CP OB stateTemp returnFunc CB 
+    :type funcVariable OP funcPara CP OB stateTemp returnFunc CB 
     {
         insert($1,$2,"--",3 );
+        
+        
+        strcpy(treeArr[tk++].Parent,"functions");
+        strcpy(treeArr[tk-1].child, "statements");
+        treeArr[tk-1].level = ++np;
+        treeArr[tk-1].isT = false;
+        
+        strcpy(treeArr[tk++].Parent,"functions");
+        strcpy(treeArr[tk-1].child, "Parameters");
+        treeArr[tk-1].level = np;
+        treeArr[tk-1].isT = false;
+        
+        strcpy(treeArr[tk++].Parent,"functions");
+        strcpy(treeArr[tk-1].child, $2);
+        treeArr[tk-1].level = np;
+        treeArr[tk-1].isT = true;
+        
+        strcpy(treeArr[tk++].Parent,"functions");
+        strcpy(treeArr[tk-1].child, $1);
+        treeArr[tk-1].level = np;
+        treeArr[tk-1].isT = true;
+        
+       funcFlag = false;
+        
     }
+
+funcVariable
+    :IDE{funcFlag = true;}
 
 returnFunc
     :RETURN lhs SEMICOLON
@@ -236,8 +284,8 @@ returnFunc
     ;
 
 funcPara
-    :type variable ASSIGN lhs
-    |type variable
+    :type variable ASSIGN lhs {insertNode($1, $2, "=", $4,"Parameters",false);}
+    |type variable {insertNode($1, $2, "--","--","Parameters",false);}
     |nextPara
     |
     ;
@@ -252,6 +300,21 @@ stateTemp
     ;    
 statements
     :declaration stateTemp
+    {
+    //head ache...........
+        --np;
+        
+        strcpy(treeArr[tk++].Parent,"statements");
+        strcpy(treeArr[tk-1].child, "statements");
+        treeArr[tk-1].level = np+2;
+        treeArr[tk-1].isT = false;
+    
+        strcpy(treeArr[tk++].Parent,"statements");
+        strcpy(treeArr[tk-1].child, "declarations");
+        treeArr[tk-1].level =np+2;
+        treeArr[tk-1].isT = false;
+       
+    }
     |forExp stateTemp
     |whileExp stateTemp
     |ifElse stateTemp

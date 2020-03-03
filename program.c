@@ -1,7 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-int x=10;// this is comment
+int x=1;
+int main(){
+    int a=10;
+    int b=100;
+}
 
 
 
