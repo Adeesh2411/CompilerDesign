@@ -17,40 +17,28 @@
 %type<txt> type assignList variable funcVariable
 %start program
 
-
-
 %%
 program : header  nextPart{
-                
-             strcpy(treeArr[tk++].Parent,"Start");
-             strcpy(treeArr[tk-1].child, "header");
-             treeArr[tk-1].level = --np;
-             treeArr[tk-1].isT = false;
-             
-             strcpy(treeArr[tk++].Parent,"Start");
-             strcpy(treeArr[tk-1].child, "nextPart");
-             treeArr[tk-1].level = np;
-             treeArr[tk-1].isT = false;
-             printf("\nDone\n");
+            CreateNode("Start", "nextPart", 2);
+            CreateNode("Start", "header", 2);
+            
+            CreateNode("--", "Start", 2);
+             //printf("\nDone\n");
              displayTable();
+             CreateTree();
+             Inorder(treeLink[tl-1],0);
+             printf("\n");
              displayTree();             
          };
-             
-
 
 header : HEADER 
         {
-            strcpy(treeArr[tk++].Parent,"header");
-            strcpy(treeArr[tk-1].child, $1);
-            treeArr[tk-1].level = 0;
-            treeArr[tk-1].isT = true;
+            CreateNode("header", $1, 1);
         }
         |HEADER header 
         {
-            strcpy(treeArr[tk++].Parent,"header");
-            strcpy(treeArr[tk-1].child, $1);
-            treeArr[tk-1].level = 0;
-            treeArr[tk-1].isT = true;
+            CreateNode("header", $1, 2);
+            CreateNode("header","header",2);
         }
        ;
        
@@ -58,30 +46,14 @@ header : HEADER
        
 nextPart 
     :declaration  nextPart 
-    {       
-        strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "declarations");
-        treeArr[tk-1].level = --np;
-        treeArr[tk-1].isT = false;
-        
-        strcpy(treeArr[tk++].Parent,"nextPart"); 
-        strcpy(treeArr[tk-1].child, "nextPart"); 
-        treeArr[tk-1].level = np;
-        treeArr[tk-1].isT = false;
+    {
+        CreateNode("nextPart","declaration",2);
+        CreateNode("nextPart", "nextPart", 2);       
     }
     |function nextPart
     {
-        strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "nextPart");
-        treeArr[tk-1].level = --np;
-        treeArr[tk-1].isT = false;
-        funcFlag = false;
-        
-        strcpy(treeArr[tk++].Parent,"nextPart");
-        strcpy(treeArr[tk-1].child, "functions");
-        treeArr[tk-1].level = np;
-        treeArr[tk-1].isT = false;
-        funcFlag = false;
+        CreateNode("nextPart", "function", 4);
+        CreateNode("nextPart", "nextPart", 2);
     }
     |
     ;
@@ -108,6 +80,10 @@ declaration
                 else{
                     printf("undefined %s assigned in line No %d\nline => %s\n",T.value,lineNo,prevToken);
                 }
+                //
+                CreateNode("declaration", "AssignList", 3);
+                CreateNode("declaration", "type", 1);
+                
             }
             else{
                 for(int i=0;i<ck;i++){
@@ -124,7 +100,7 @@ declaration
                     ck=0;comaflag=0;
                 }          
             }       
-            insertNode($1, T.name, "=",T.value,"declarations",funcFlag);
+           
     }
     
     | variable ASSIGN exp SEMICOLON
@@ -156,7 +132,12 @@ assignList
 	        Tarr[ck-1].dflag = 2;
 	    }
 	    
+        //
         
+        CreateExprNode(strtok(exprToken,"!"), $3);
+        CreateNode("AssignList",$3,exprCount);
+        CreateNode("AssignList", "=", 0);
+        CreateNode("AssignList",$1,0);
 	}
 	| variable COMMA assignList
 	{
@@ -187,13 +168,15 @@ assignList
 	
 
 type
-    :INT {}
-    |CHAR { typeValue = 4;}
-    |DOUBLE { typeValue = 3;}
-    |FLOAT { typeValue = 2;}
+    :INT {CreateNode("type", "int",0); }
+    |CHAR { CreateNode("type", "char",0);}
+    |DOUBLE { CreateNode("type","double",0);}
+    |FLOAT { CreateNode("type", "float",0);}
     ;
 variable   
-    :IDE
+    :IDE{
+        
+    }
     ;
     
 lhs 
@@ -215,12 +198,10 @@ lhs
 exp 
     :exp ADD exp1 {
          $$ = operate($1, $3, 1);
-        
+       
     }
     |exp SUB exp1 {
-        {
-            $$ = operate($1, $3, 2);
-        }
+       $$ = operate($1, $3, 2);
     }
     |exp1  {
         strcpy($$, $1);
@@ -228,52 +209,44 @@ exp
     ;
     
 exp1
-    :exp1 MUL exp2 {  $$ = operate($1, $3, 3);  }
-    |exp1 DIV exp2 { $$ = operate($1, $3, 4);}
-    |lhs { 
+    :exp1 MUL exp2 {
+       $$ = operate($1, $3, 3);  
+    }
+    |exp1 DIV exp2 {
+       $$ = operate($1, $3, 4);
+    }
+    |lhs {
+       
         strcpy($$,$1);
     }
     
     |OP exp CP {
-        
+       
         strcpy($$, $2);
     }
     ;
     
 exp2
-    :lhs {strcpy($$, $1);}
-    | OP exp CP {strcpy($$,$2);}
+    :lhs {
+       
+        strcpy($$, $1);
+        
+    }
+    | OP exp CP {
+       
+        strcpy($$,$2);
+        
+    }
     ;
 
 function
     :type funcVariable OP funcPara CP OB stateTemp returnFunc CB 
     {
         insert($1,$2,"--",3 );
-        
-        
-        strcpy(treeArr[tk++].Parent,"functions");
-        strcpy(treeArr[tk-1].child, "statements");
-        treeArr[tk-1].level = ++np;
-        treeArr[tk-1].isT = false;
-        
-        strcpy(treeArr[tk++].Parent,"functions");
-        strcpy(treeArr[tk-1].child, "Parameters");
-        treeArr[tk-1].level = np;
-        treeArr[tk-1].isT = false;
-        
-        strcpy(treeArr[tk++].Parent,"functions");
-        strcpy(treeArr[tk-1].child, $2);
-        treeArr[tk-1].level = np;
-        treeArr[tk-1].isT = true;
-        
-        strcpy(treeArr[tk++].Parent,"functions");
-        strcpy(treeArr[tk-1].child, $1);
-        treeArr[tk-1].level = np;
-        treeArr[tk-1].isT = true;
-        
-       funcFlag = false;
-
-        
+        CreateNode("function","Statement", 2);
+        CreateNode("function", "funcPara", 4);
+        CreateNode("function", $2, 0);
+        CreateNode("function", "type",1);       
     }
 
 funcVariable
@@ -285,58 +258,63 @@ returnFunc
     ;
 
 funcPara
-    :type variable ASSIGN lhs {insertNode($1, $2, "=", $4,"Parameters",false);}
-    |type variable {insertNode($1, $2, "--","--","Parameters",false);}
-    |nextPara
+    :type variable ASSIGN lhs{
+        CreateNode("funcPara",$4,0);
+        CreateNode("funcPara","=",0);
+        CreateNode("funcPara", $2, 0);
+        CreateNode("funcPara", "type", 1);
+    } 
+    |type variable {
+        CreateNode("funcPara",$2,0);
+        CreateNode("funcPara", "type", 1);
+    }
+    |nextPara{
+        CreateNode("funcPara","nextPara",6);
+    }
     |
     ;
 nextPara
-    :type variable ASSIGN lhs COMMA funcPara
-    |type variable COMMA funcPara
+    :type variable ASSIGN lhs COMMA funcPara{
+        CreateNode("nextPara","funcPara",3);
+        CreateNode("nextPara", ",", 0);
+        CreateNode("nextPara", $4,0);
+        CreateNode("nextPara", "=",0);
+        CreateNode("nextPara",$2, 0);
+        CreateNode("nextPara", "type", 1);
+    }
+    |type variable COMMA funcPara{
+        CreateNode("nextPara","funcPara",3);
+        CreateNode("nextPara", ",", 0);
+        CreateNode("nextPara",$2, 0);
+        CreateNode("nextPara", "type", 1);
+    }
     ;
 
 stateTemp
-    :statements
+    :statements{
+        //CreateNode("nextStatement", "Statement", 2);
+    }
     |
     ;    
 statements
     :declaration stateTemp
     {
-    //head ache...........
-        --np;
-        
-        strcpy(treeArr[tk++].Parent,"statements");
-        strcpy(treeArr[tk-1].child, "statements");
-        treeArr[tk-1].level = np+2;
-        treeArr[tk-1].isT = false;
-    
-        strcpy(treeArr[tk++].Parent,"statements");
-        strcpy(treeArr[tk-1].child, "declarations");
-        treeArr[tk-1].level =np+2;
-        treeArr[tk-1].isT = false;
-       printf("%d\n",funcCount);
-       
+        CreateNode("Statement", "Statement", 2);
+        CreateNode("Statement", "declaration", 2);
     }
     |forExp stateTemp
     {
-        strcpy(treeArr[tk++].Parent,"statements");
-        strcpy(treeArr[tk-1].child, "forExp");
-        treeArr[tk-1].level = np+2;
-        treeArr[tk-1].isT = false;
+        
+        CreateNode("Statement", "Statement", 2);
+        CreateNode("Statement", "forExp", 5);
     }
     |whileExp stateTemp
     {
-        strcpy(treeArr[tk++].Parent,"statements");
-        strcpy(treeArr[tk-1].child, "whileExp");
-        treeArr[tk-1].level = np+2;
-        treeArr[tk-1].isT = false;
+        CreateNode("Statement", "whileExp", 2);
     }
     |ifElse stateTemp
     {
-        strcpy(treeArr[tk++].Parent,"statements");
-        strcpy(treeArr[tk-1].child, "IfElseExp");
-        treeArr[tk-1].level = np+2;
-        treeArr[tk-1].isT = false;
+        CreateNode("Statement", "ifElse", 2);
     }
     ;
 
@@ -367,49 +345,53 @@ condExp
 forExp
     :FOR OP for1 SEMICOLON for2 SEMICOLON for3 CP OB stateTemp CB
     {
-        
-        strcpy(treeArr[tk++].Parent,"forExp");
-        strcpy(treeArr[tk-1].child, "statements");
-        treeArr[tk-1].level = np+3;
-        treeArr[tk-1].isT = false;
-    
-        strcpy(treeArr[tk++].Parent,"forExp");
-        strcpy(treeArr[tk-1].child, "for3");
-        treeArr[tk-1].level = np+3;
-        treeArr[tk-1].isT = false;
-    
-        strcpy(treeArr[tk++].Parent,"forExp");
-        strcpy(treeArr[tk-1].child, "for2");
-        treeArr[tk-1].level = np+3;
-        treeArr[tk-1].isT = false;
-    
-        strcpy(treeArr[tk++].Parent,"forExp");
-        strcpy(treeArr[tk-1].child, "for1");
-        treeArr[tk-1].level = np+3;
-        treeArr[tk-1].isT = false;
+        CreateNode("forExp", "Statement", 2);
+        CreateNode("forExp", "for3", 6);
+        CreateNode("forExp", "for2", 6);
+        CreateNode("forExp", "for1", 6);
+        CreateNode("forExp", "for", 0);
     }
     ;
 
 for1
     :type variable ASSIGN lhs COMMA for1
     {
-        insert($1, $2, $4, 4);       
+        insert($1, $2, $4, 4);
+        CreateNode("for1", "for1", 6);
+        CreateNode("for1", ",", 0);
+        CreateNode("for1", $4, 0);
+        CreateNode("for1", "=", 0);
+        CreateNode("for1", $2, 0);
+        CreateNode("for1", "type", 1);       
     }
     | type variable ASSIGN lhs
     {
          insert($1, $2, $4, 4);
+        CreateNode("for1", $4, 0);
+        CreateNode("for1", "=", 0);
+        CreateNode("for1", $2, 0);
+        CreateNode("for1", "type", 1);
     }
     |variable ASSIGN lhs COMMA for1
     {
         if(checkTableToAccess($1)){}
         else
             printf("ERROR : undefined variable \'%s\' in line No %d\n",$1, lineNo);
+        CreateNode("for1", "for1", 6);
+        CreateNode("for1", ",", 0);
+        CreateNode("for1", $3, 0);
+        CreateNode("for1", "=", 0);
+        CreateNode("for1", $1, 0);
     }
     |variable ASSIGN lhs
     {
         if(checkTableToAccess($1)){}
         else
             printf("ERROR : undefined variable \'%s\' in line No %d\n",$1, lineNo);
+
+        CreateNode("for1", $3, 0);
+        CreateNode("for1", "=", 0);
+        CreateNode("for1", $1, 0);
     }
     |
     ;

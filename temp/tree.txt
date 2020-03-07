@@ -1,29 +1,40 @@
--1,Start,nextPart,0
--1,Start,header,0
-0,nextPart,nextPart,0
-0,nextPart,declarations,0
-1,nextPart,functions,0
-1,nextPart,nextPart,0
-2,functions,int,1
-2,functions,main,1
-2,functions,Parameters,0
-2,functions,statements,0
-3,statements,declarations,0
-3,statements,statements,0
-4,statements,declarations,0
-4,statements,statements,0
-5,declarations,int,1
-5,declarations,b,1
-5,declarations,=,1
-5,declarations,100,1
-4,declarations,int,1
-4,declarations,a,1
-4,declarations,=,1
-4,declarations,10,1
-1,declarations,int,1
-1,declarations,x,1
-1,declarations,=,1
-1,declarations,1,1
--2,header,#include<stdio.h>,1
--2,header,#include<stdlib.h>,1
--2,header,#include<string.h>,1
+Start (0),header (1)
+Start (0),nextPart (1)
+nextPart (1),nextPart (2)
+nextPart (1),declaration (2)
+nextPart (2),nextPart (3)
+nextPart (2),function (3)
+function (3),type (4)
+function (3),main (101)
+function (3),funcPara (4)
+function (3),Statement (4)
+Statement (4),declaration (5)
+Statement (4),Statement (5)
+Statement (5),declaration (6)
+Statement (5),Statement (6)
+declaration (6),type (7)
+declaration (6),AssignList (7)
+AssignList (7),InsideMain2 (107)
+AssignList (7),= (108)
+AssignList (7),10 (8)
+10 (8),10 (109)
+10 (8),; (110)
+type (4),int (100)
+declaration (5),type (6)
+declaration (5),AssignList (6)
+AssignList (6),InsideMain1 (102)
+AssignList (6),= (103)
+AssignList (6),10 (7)
+10 (7),10 (104)
+10 (7),; (105)
+type (7),int (111)
+type (6),int (106)
+declaration (2),type (3)
+declaration (2),AssignList (3)
+AssignList (3),global (112)
+AssignList (3),= (113)
+AssignList (3),10 (4)
+10 (4),10 (114)
+10 (4),; (115)
+type (3),int (116)
+header (1),#include<stdio.h> (2)

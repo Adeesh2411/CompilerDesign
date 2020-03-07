@@ -1,7 +1,7 @@
 <int keyword>
-<x Identifier>
+<global Identifier>
 <= ASSIGN>
-<1 Numeric>
+<10 Numeric>
 <; punc>
 <int keyword>
 <main Identifier>
@@ -9,13 +9,13 @@
 <) punc>
 <{ punc>
 <int keyword>
-<a Identifier>
+<InsideMain1 Identifier>
 <= ASSIGN>
 <10 Numeric>
 <; punc>
 <int keyword>
-<b Identifier>
+<InsideMain2 Identifier>
 <= ASSIGN>
-<100 Numeric>
+<10 Numeric>
 <; punc>
 <} punc>

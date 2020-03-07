@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include "y.tab.h"
+#include<stdbool.h>
 
     int lineNo =1;
     int scope = 0;
@@ -10,7 +11,13 @@
     extern int Gscope;
     extern char curToken[100];
     extern char prevToken[100];
+    extern char exprToken[100];
+
+    
     extern char* yytext;
+    bool exprFlag = false;
+    int exprCount=0;
+
     int semiFlag = 0;
     char *e;
     void generateToken(char* s, char* s1, int a);
@@ -28,8 +35,8 @@ End   \*\/
 \/\/(.*)  ;
 {Start}.*{End} ;
 
-"-"     {yylval.txt=strdup(yytext); generateToken("-","SUB",-1);  return SUB;}
-"+"     {yylval.txt=strdup(yytext);  generateToken("+","ADD",-1);return ADD;}
+"-"     {yylval.txt=strdup(yytext); generateToken("-","SUB",-1);   return SUB;}
+"+"     {yylval.txt=strdup(yytext);  generateToken("+","ADD",-1); return ADD;}
 "*"     {yylval.txt=strdup(yytext); generateToken("*","MUL",-1);return MUL;}
 "/"     {yylval.txt=strdup(yytext); generateToken("/","Div",-1);return DIV;}
 ">="    {yylval.txt=strdup(yytext); generateToken(">=","GEQ",-1);return GE;}
@@ -38,7 +45,7 @@ End   \*\/
 "<"     {yylval.txt=strdup(yytext); generateToken("<","L",-1); return L;}
 ">"     {yylval.txt=strdup(yytext);  generateToken(">","G",-1);return G;}
 "!="    {yylval.txt=strdup(yytext); generateToken("!=","NEQ",-1);return NEQ;}
-"="     {yylval.txt=strdup(yytext);generateToken("=","ASSIGN",-1);return ASSIGN;}
+"="     {yylval.txt=strdup(yytext);generateToken("=","ASSIGN",-1); exprFlag = true; exprCount = 0; strcpy(exprToken, "");return ASSIGN;}
 "&&"    {yylval.txt=strdup(yytext);generateToken("&&","AND",-1);return AND;}
 "||"    {yylval.txt=strdup(yytext);generateToken("||","OR",-1);return OR;}
 "&"     {yylval.txt = strdup(yytext); generateToken("&","Logical And",-1); return LAND;}
@@ -66,7 +73,8 @@ End   \*\/
 "double"    {yylval.txt=strdup(yytext);generateToken("double","keyword",-1);return DOUBLE; }
 
 
-";"     {yylval.txt=strdup(yytext);generateToken(";","punc",-1);strcpy(prevToken, curToken);strcpy(curToken, "");return SEMICOLON;}
+";"     {yylval.txt=strdup(yytext);generateToken(";","punc",-1);strcpy(prevToken, curToken);strcpy(curToken, ""); exprFlag = false; 
+        return SEMICOLON;}
 ","     {yylval.txt=strdup(yytext);generateToken(",","punc",-1);return COMMA;}
 "("     {yylval.txt=strdup(yytext);generateToken("(","punc",-1);return OP;}
 ")"     {yylval.txt=strdup(yytext);generateToken(")","punc",-1);return CP;}

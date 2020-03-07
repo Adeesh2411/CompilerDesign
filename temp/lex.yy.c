@@ -522,6 +522,7 @@ char *yytext;
 #include<stdlib.h>
 #include<string.h>
 #include "y.tab.h"
+#include<stdbool.h>
 
     int lineNo =1;
     int scope = 0;
@@ -529,13 +530,19 @@ char *yytext;
     extern int Gscope;
     extern char curToken[100];
     extern char prevToken[100];
+    extern char exprToken[100];
+
+    
     extern char* yytext;
+    bool exprFlag = false;
+    int exprCount=0;
+
     int semiFlag = 0;
     char *e;
     void generateToken(char* s, char* s1, int a);
     double TOKEN;
-#line 538 "lex.yy.c"
-#line 539 "lex.yy.c"
+#line 545 "lex.yy.c"
+#line 546 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -755,9 +762,9 @@ YY_DECL
 		}
 
 	{
-#line 27 "program.l"
+#line 34 "program.l"
 
-#line 761 "lex.yy.c"
+#line 768 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -817,197 +824,198 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "program.l"
+#line 35 "program.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "program.l"
+#line 36 "program.l"
 ;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 31 "program.l"
-{yylval.txt=strdup(yytext); generateToken("-","SUB",-1);  return SUB;}
+#line 38 "program.l"
+{yylval.txt=strdup(yytext); generateToken("-","SUB",-1);   return SUB;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 32 "program.l"
-{yylval.txt=strdup(yytext);  generateToken("+","ADD",-1);return ADD;}
+#line 39 "program.l"
+{yylval.txt=strdup(yytext);  generateToken("+","ADD",-1); return ADD;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 33 "program.l"
+#line 40 "program.l"
 {yylval.txt=strdup(yytext); generateToken("*","MUL",-1);return MUL;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 34 "program.l"
+#line 41 "program.l"
 {yylval.txt=strdup(yytext); generateToken("/","Div",-1);return DIV;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 35 "program.l"
+#line 42 "program.l"
 {yylval.txt=strdup(yytext); generateToken(">=","GEQ",-1);return GE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 36 "program.l"
+#line 43 "program.l"
 {yylval.txt=strdup(yytext);  generateToken("<=","LEQ",-1);return LE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 37 "program.l"
+#line 44 "program.l"
 {yylval.txt=strdup(yytext); generateToken("==","EQ",-1); return EQ;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 38 "program.l"
+#line 45 "program.l"
 {yylval.txt=strdup(yytext); generateToken("<","L",-1); return L;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 39 "program.l"
+#line 46 "program.l"
 {yylval.txt=strdup(yytext);  generateToken(">","G",-1);return G;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 40 "program.l"
+#line 47 "program.l"
 {yylval.txt=strdup(yytext); generateToken("!=","NEQ",-1);return NEQ;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 41 "program.l"
-{yylval.txt=strdup(yytext);generateToken("=","ASSIGN",-1);return ASSIGN;}
+#line 48 "program.l"
+{yylval.txt=strdup(yytext);generateToken("=","ASSIGN",-1); exprFlag = true; exprCount = 0; strcpy(exprToken, "");return ASSIGN;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 42 "program.l"
+#line 49 "program.l"
 {yylval.txt=strdup(yytext);generateToken("&&","AND",-1);return AND;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 43 "program.l"
+#line 50 "program.l"
 {yylval.txt=strdup(yytext);generateToken("||","OR",-1);return OR;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 44 "program.l"
+#line 51 "program.l"
 {yylval.txt = strdup(yytext); generateToken("&","Logical And",-1); return LAND;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 45 "program.l"
+#line 52 "program.l"
 {yylval.txt = strdup(yytext); generateToken("&","Logical Or",-1); return LOR;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 46 "program.l"
+#line 53 "program.l"
 {yylval.txt=strdup(yytext); generateToken("++","INC",-1);return INC;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 47 "program.l"
+#line 54 "program.l"
 {yylval.txt=strdup(yytext);generateToken("--","DEC",-1);return DEC;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "program.l"
+#line 55 "program.l"
 {yylval.txt=strdup(yytext);generateToken("^","XOR",-1);return XOR;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 51 "program.l"
+#line 58 "program.l"
 {yylval.txt=strdup(yytext);generateToken("switch","keyword",-1);return SWITCH;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 52 "program.l"
+#line 59 "program.l"
 {yylval.txt=strdup(yytext);generateToken("if","keyword",-1);return IF;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 53 "program.l"
+#line 60 "program.l"
 {yylval.txt=strdup(yytext);generateToken("else","keyword",-1);return ELSE;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 56 "program.l"
+#line 63 "program.l"
 {yylval.txt=strdup(yytext);generateToken("break","keyword",-1);return BREAK;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 57 "program.l"
+#line 64 "program.l"
 {yylval.txt=strdup(yytext);generateToken("char","keyword",-1);return CHAR;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 58 "program.l"
+#line 65 "program.l"
 {yylval.txt=strdup(yytext);generateToken("int","keyword",-1);return INT;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 59 "program.l"
+#line 66 "program.l"
 {yylval.txt=strdup(yytext);generateToken("while","keyword",-1);return WHILE;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 60 "program.l"
+#line 67 "program.l"
 {yylval.txt=strdup(yytext);generateToken("for","keyword",-1);return FOR;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 61 "program.l"
+#line 68 "program.l"
 {yylval.txt=strdup(yytext);generateToken("float","keyword",-1);  return FLOAT;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 62 "program.l"
+#line 69 "program.l"
 {yylval.txt=strdup(yytext);generateToken("default","keyword",-1);return DEFAULT;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "program.l"
+#line 70 "program.l"
 {yylval.txt=strdup(yytext);generateToken("case","keyword",-1);return CASE;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 64 "program.l"
+#line 71 "program.l"
 {yylval.txt=strdup(yytext);generateToken("void","keyword",-1);return VOID;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 65 "program.l"
+#line 72 "program.l"
 {yylval.txt=strdup(yytext);generateToken("return","keyword",-1);return RETURN;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 66 "program.l"
+#line 73 "program.l"
 {yylval.txt=strdup(yytext);generateToken("double","keyword",-1);return DOUBLE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 69 "program.l"
-{yylval.txt=strdup(yytext);generateToken(";","punc",-1);strcpy(prevToken, curToken);strcpy(curToken, "");return SEMICOLON;}
+#line 76 "program.l"
+{yylval.txt=strdup(yytext);generateToken(";","punc",-1);strcpy(prevToken, curToken);strcpy(curToken, ""); exprFlag = false; 
+        return SEMICOLON;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 70 "program.l"
+#line 78 "program.l"
 {yylval.txt=strdup(yytext);generateToken(",","punc",-1);return COMMA;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 71 "program.l"
+#line 79 "program.l"
 {yylval.txt=strdup(yytext);generateToken("(","punc",-1);return OP;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 72 "program.l"
+#line 80 "program.l"
 {yylval.txt=strdup(yytext);generateToken(")","punc",-1);return CP;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 74 "program.l"
+#line 82 "program.l"
 {    yylval.txt=strdup(yytext);
              scope++;
              Gscope++;
@@ -1017,7 +1025,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 81 "program.l"
+#line 89 "program.l"
 {
             yylval.txt=strdup(yytext);
             scope--;
@@ -1029,56 +1037,56 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 90 "program.l"
+#line 98 "program.l"
 {yylval.txt=strdup(yytext);return HEADER;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 95 "program.l"
+#line 103 "program.l"
 {yylval.txt=strdup(yytext); return CHARVALUE;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 96 "program.l"
+#line 104 "program.l"
 {yylval.txt=strdup(yytext); generateToken(yylval.txt, "Identifier", -1);return IDE;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 98 "program.l"
+#line 106 "program.l"
 {yylval.txt=strdup(yytext); generateToken(yylval.txt, "Numeric", -1);return NUM;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 99 "program.l"
+#line 107 "program.l"
 {yylval.txt=strdup(yytext);return REAL;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 100 "program.l"
+#line 108 "program.l"
 {yylval.txt=strdup(yytext);return REAL;}
 	YY_BREAK
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 103 "program.l"
+#line 111 "program.l"
 {lineNo++;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 104 "program.l"
+#line 112 "program.l"
 ;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 107 "program.l"
+#line 115 "program.l"
 return yytext[0];
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 109 "program.l"
+#line 117 "program.l"
 ECHO;
 	YY_BREAK
-#line 1082 "lex.yy.c"
+#line 1090 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2086,7 +2094,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 109 "program.l"
+#line 117 "program.l"
 
 
 int yywrap(void)

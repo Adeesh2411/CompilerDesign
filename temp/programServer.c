@@ -4,8 +4,15 @@
 void generateToken(char* name ,char *value, int nec){
     strcat(curToken, name);
     strcat(curToken, " ");
-    //printf("%s\n",curToken);
-    //printf("yytext = %s\n",yytext);
+    
+    if(exprFlag){
+        strcat(exprToken, name);
+        strcat(exprToken, "!");//seperator
+        exprCount++;
+    }
+    
+   
+    
     fprintf(tempFile, "<%s %s>\n",name, value);
 }
 
@@ -223,10 +230,11 @@ char *correct(char *val, char *type){
 
 
 void displayTree(){
-    for(int i=tk-1; i>=0; i--){
-        fprintf(treeFile, "%d,%s,%s,%d\n",treeArr[i].level,treeArr[i].Parent, treeArr[i].child, treeArr[i].isT);
+    for(int i=tl-2; i>=0; i--){
+        fprintf(treeFile, "%s,%s\n", treeLink[i]->parent, treeLink[i]->name);
     }
 }
+
 
 char* intToStr(char* s, int n){
     char temp[20];
@@ -236,30 +244,110 @@ char* intToStr(char* s, int n){
     return tempArr;    
 }
 
-void insertNode(char *type, char *name, char *op, char* val, char* parent,bool temp){
-   ++np;
-   int x = np;
-   if(temp){ //inside function..
-        x=np+2;
-   }
-   
-   strcpy(treeArr[tk++].Parent,parent);
-   strcpy(treeArr[tk-1].child, val);
-   treeArr[tk-1].level = x;
-   treeArr[tk-1].isT = true;
-   
-   strcpy(treeArr[tk++].Parent,parent);
-   strcpy(treeArr[tk-1].child, op);
-   treeArr[tk-1].level = x;
-   treeArr[tk-1].isT = true;  
+void CreateNode(char *parent, char* name, int n){
+    node *new = (node*)malloc(sizeof(node));
+    strcpy(new ->parent, parent);
+    strcpy(new->name, name);
+    
+    new->nLink =  n;
+    treeLink[tl++] = new;
+    new->temp =0;
+    
+    if(!strcmp(name,"declaration") ) new->isT = true;
+    else new->isT = false;
+}
 
-    strcpy(treeArr[tk++].Parent,parent);
-   strcpy(treeArr[tk-1].child, name);
-   treeArr[tk-1].level = x;
-   treeArr[tk-1].isT = true;
+node *getParent(char *name, int index){
+    for(int i=index;i<tl;i++){
+        if(!strcmp(name, treeLink[i]->name)){
+            return treeLink[i];
+        }
+    }
+    return NULL;
+}
 
-    strcpy(treeArr[tk++].Parent,parent);
-   strcpy(treeArr[tk-1].child, type);
-   treeArr[tk-1].level = x;
-   treeArr[tk-1].isT = true;
+void CreateTree(){
+    memset(checkTree, false, sizeof(checkTree));
+
+    for(int i=tl-1; i>=0; i--){
+        //node *par = getParent(treeLink[i]->parent, i+1);
+        if(treeLink[i]->isT) AssignLinkRev(i);
+        else
+            AssignLink(i);
+       
+        
+    }
+}
+//assign list is reversed than others
+
+
+
+void AssignLinkRev(int pNo){
+    node *cur = treeLink[pNo];
+    int No_ofLink = 0;
+    
+    for(int i=0; i<tl; i++){
+        if(No_ofLink == cur->nLink) return;
+        
+        if(!checkTree[i]){
+            if(!strcmp(treeLink[i]->parent,cur->name)){
+                
+                cur->childArrLink[No_ofLink++] = treeLink[i];
+                checkTree[i] = true;
+            }
+        }
+    }
+}
+
+void AssignLink(int pNo){
+    node *cur = treeLink[pNo];
+    int No_ofLink = 0;
+    
+    for(int i=tl-1; i>=0; i--){
+        if(No_ofLink == cur->nLink) return;
+        
+        if(!checkTree[i]){
+            if(!strcmp(treeLink[i]->parent,cur->name)){
+                
+                cur->childArrLink[No_ofLink++] = treeLink[i];
+                checkTree[i] = true;
+            }
+        }
+    }
+}
+void Inorder(node *Start, int level){
+/*    for(int i=0;i<tl;i++){
+        printf("parent = %s    name = %s   link = %d\n",treeLink[i]->parent, treeLink[i]->name,treeLink[i]->nLink);
+    }
+*/
+    if(Start){
+        for(int i=0;i<Start->nLink;i++){
+            
+            Inorder(Start->childArrLink[i], level +1);
+        }
+        Start->level = level;
+        if(!Start->nLink)
+            strcpy(Start->name , cat(Start->name, childLevel++));
+        else
+            strcpy(Start->name , cat(Start->name, level));
+        strcpy(Start->parent , cat(Start->parent, level-1));
+       // printf("%s \n",Start->name);
+    }
+       
+}
+
+char *cat(char *one, int two){
+    char tt[11];
+    sprintf(tt, " (%d)",two );
+    strcpy(tempArr,  one);
+    strcat(tempArr, tt);
+    return tempArr;
+}
+
+void CreateExprNode(char *token,char *par){
+    if(token == NULL) return;
+    char *temp = token;
+    temp = strtok(NULL, "!");
+    CreateExprNode(temp,par);
+    CreateNode(par, token, 0);
 }

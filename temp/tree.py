@@ -1,22 +1,21 @@
 from anytree import Node, RenderTree, find_by_attr
 from anytree.exporter import DotExporter
 from anytree.dotexport import RenderTreeGraph
+
 with open("tree.txt", 'r') as f:
     lines = f.readlines();
 
-    root = Node("Start"+ str(int(lines[0].split(',')[0])-1 ))
-    
+    root = Node("Start (0)");
     for line in lines:
         line = line.split(',')
-        par = line[1].strip()+str(int(line[0].strip())-1)
-        if(not int(line[3].strip())):
-            name = line[2].strip()+line[0].strip()
-        else:
-            name = line[2].strip()+" ("+line[0].strip()+")"
+        
+        par = line[0].strip()
+        name = line[1].strip()
+
         Node(name, parent = find_by_attr(root, par))
 
-    for pre,_,node in RenderTree(root):
-        print("%s%s" %(pre, node.name))
+    #for pre,_,node in RenderTree(root):
+    #    print("%s%s" %(pre, node.name))
         
 
 

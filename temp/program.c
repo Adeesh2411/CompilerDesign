@@ -1,11 +1,7 @@
 #include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-int x=1;
+int global=10;
 int main(){
-    int a=10;
-    int b=100;
+    int InsideMain1=10;
+    int InsideMain2=10;
+ 
 }
-
-
-

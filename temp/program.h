@@ -23,6 +23,11 @@
     
     char curToken[100];
     char prevToken[100];
+    char exprToken[100];
+
+    extern bool exprFlag;
+    extern int exprCount;
+
     
     int comaflag = 0;
     int ck =0;
@@ -60,7 +65,8 @@
 	   
 	   
 	bool funcFlag;
-	   
+    int funcCount = 0;
+    	   
 	struct dtemp{
 	    char name[20];
 	}dtemparr[100];
@@ -73,16 +79,24 @@
 	char tempArr[100];
 	
 	//for tree
-	int np = 0;
-	int fnp=0;
-	int tk=0;
-	struct Tree{
-	    char Parent[30];
-	    char child[30];
+    int expCount = 0;
+	int childLevel = 100;
+	bool checkTree[2000];
+	
+	char* Stack[100];
+	int stI = 0;
+	
+	typedef struct node{
+	    char parent[20];
+	    char name[20];
+	    struct node *childArrLink[20];
+	    int nLink;
+	    int temp;
 	    int level;
 	    bool isT;
-	}treeArr[200];
-	
+	}node;
+	int tl=0;
+	node* treeLink[2000];
 	
 	//function declarations used
 	void displayTable();  //for displaying symbol table..
@@ -97,4 +111,12 @@
 	char *correct(char *val, char *type); //to correct the number of perticular type
 	void displayTree(); // for printing AST
 	char* intToStr(char* s, int n); //for AST same name
-	void insertNode(char *, char*, char *,char*,char*,bool); //for inserting node to a tree
+	//void insertNode(char *, char*, char *,char*,char*,bool); //for inserting node to a tree
+	void CreateNode(char *, char*, int);    //Creating the node of given name, parent name
+	node *getParent(char *name, int index); //getNode of given name
+	void CreateTree();  //for Creating tree using the linkArr
+	void Inorder(node *, int level); // inorder traversal of tree
+	char *cat(char*, int); // concat two strings
+	void AssignLink(int pNo); //
+	void CreateExprNode(char*, char*);// 
+	void AssignLinkRev(int);//
