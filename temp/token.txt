@@ -18,4 +18,9 @@
 <= ASSIGN>
 <10 Numeric>
 <; punc>
+<int keyword>
+<InsideMain3 Identifier>
+<= ASSIGN>
+<10 Numeric>
+<; punc>
 <} punc>

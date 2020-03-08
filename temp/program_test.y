@@ -13,7 +13,7 @@
 %token<txt> ADD SUB MUL DIV INC DEC
 %token<txt> SEMICOLON COMMA 
 %token<txt> OP CP OB CB LOR LAND
-%type<txt> exp exp1 lhs exp2 condExp
+%type<txt> exp exp1 lhs exp2 condExp condExp1
 %type<txt> type assignList variable funcVariable
 %start program
 
@@ -82,7 +82,7 @@ declaration
                 }
                 //
                 CreateNode("declaration", "AssignList", 3);
-                CreateNode("declaration", "type", 1);
+                CreateNode("declaration", $1, 0);
                 
             }
             else{
@@ -168,10 +168,10 @@ assignList
 	
 
 type
-    :INT {CreateNode("type", "int",0); }
-    |CHAR { CreateNode("type", "char",0);}
-    |DOUBLE { CreateNode("type","double",0);}
-    |FLOAT { CreateNode("type", "float",0);}
+    :INT 
+    |CHAR { }
+    |DOUBLE 
+    |FLOAT 
     ;
 variable   
     :IDE{
@@ -246,7 +246,7 @@ function
         CreateNode("function","Statement", 2);
         CreateNode("function", "funcPara", 4);
         CreateNode("function", $2, 0);
-        CreateNode("function", "type",1);       
+        CreateNode("function", $1,0);       
     }
 
 funcVariable
@@ -262,11 +262,11 @@ funcPara
         CreateNode("funcPara",$4,0);
         CreateNode("funcPara","=",0);
         CreateNode("funcPara", $2, 0);
-        CreateNode("funcPara", "type", 1);
+        CreateNode("funcPara", $1, 0);
     } 
     |type variable {
         CreateNode("funcPara",$2,0);
-        CreateNode("funcPara", "type", 1);
+        CreateNode("funcPara", $1, 0);
     }
     |nextPara{
         CreateNode("funcPara","nextPara",6);
@@ -280,13 +280,13 @@ nextPara
         CreateNode("nextPara", $4,0);
         CreateNode("nextPara", "=",0);
         CreateNode("nextPara",$2, 0);
-        CreateNode("nextPara", "type", 1);
+        CreateNode("nextPara", $1, 0);
     }
     |type variable COMMA funcPara{
         CreateNode("nextPara","funcPara",3);
         CreateNode("nextPara", ",", 0);
         CreateNode("nextPara",$2, 0);
-        CreateNode("nextPara", "type", 1);
+        CreateNode("nextPara", $1, 0);
     }
     ;
 
@@ -301,6 +301,7 @@ statements
     {
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "declaration", 2);
+        
     }
     |forExp stateTemp
     {
@@ -310,42 +311,155 @@ statements
     }
     |whileExp stateTemp
     {
-        CreateNode("Statement", "whileExp", 2);
+        CreateNode("Statement", "Statement", 2);
+        CreateNode("Statement", "whileExp", 5);
     }
     |ifElse stateTemp
     {
-        CreateNode("Statement", "ifElse", 2);
+        CreateNode("Statement", "Statement", 2);
+        CreateNode("Statement", "ifElse", 7);
     }
     ;
 
+loopStatement
+    :declaration loopStatement{
+        CreateNode("LoopStatement", "LoopStatement", 2);
+        CreateNode("LoopStatement", "declaration", 2);
+    }
+    |forExp loopStatement
+    {
+        CreateNode("LoopStatement", "LoopStatement", 2);
+        CreateNode("LoopStatement","forExp",5 );
+    }
+    |whileExp loopStatement
+    {
+        CreateNode("LoopStatement", "LoopStatement", 2);
+        CreateNode("LoopStatement", "whileExp", 5);
+    }
+    |ifElse loopStatement
+    {
+        CreateNode("LoopStatement", "LoopStatement", 2);
+        CreateNode("LoopStatement", "ifElse", 7);
+    }
+    |
+    ;
+    
+    
+wloopStatement
+    :declaration wloopStatement{
+        CreateNode("wLoopStatement", "wLoopStatement", 2);
+        CreateNode("wLoopStatement", "declaration", 2);
+    }
+    |forExp wloopStatement
+    {
+        CreateNode("wLoopStatement", "wLoopStatement", 2);
+        CreateNode("wLoopStatement","forExp",5 );
+    }
+    |whileExp wloopStatement
+    {
+        CreateNode("wLoopStatement", "wLoopStatement", 2);
+        CreateNode("wLoopStatement", "whileExp", 5);
+    }
+    |ifElse wloopStatement
+    {
+        CreateNode("wLoopStatement", "wLoopStatement", 2);
+        CreateNode("wLoopStatement", "ifElse", 7);
+    }
+    |
+    ;
+    
+    
+ifloopStatement
+    :declaration ifloopStatement{
+        CreateNode("ifLoopStatement", "ifLoopStatement", 2);
+        CreateNode("ifLoopStatement", "declaration", 2);
+    }
+    |forExp ifloopStatement
+    {
+        CreateNode("ifLoopStatement", "ifLoopStatement", 2);
+        CreateNode("ifLoopStatement","forExp",5 );
+    }
+    |whileExp ifloopStatement
+    {
+        CreateNode("ifLoopStatement", "ifLoopStatement", 2);
+        CreateNode("ifLoopStatement", "whileExp", 5);
+    }
+    |ifElse ifloopStatement
+    {
+        CreateNode("LoopStatement", "ifLoopStatement", 2);
+        CreateNode("LoopStatement", "ifElse", 7);
+    }
+    |
+    ;    
+    
 condExp
-    :exp AND exp
-    |exp LAND exp
-    |exp OR exp
+    :exp AND exp {
+       strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+     }
+    |exp LAND exp{ strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    }
+    |exp OR exp{strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3); 
+    }
     |exp LOR exp
+    {strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    }
     |exp LE exp
-    |exp GE exp
-    |exp L exp
-    |exp G exp
-    |exp INC
-    |exp DEC
-    |INC exp
-    |DEC exp
-    |exp XOR exp
-    |exp EQ exp 
-    |exp NEQ exp
-    |exp ASSIGN exp
-    |type variable ASSIGN exp 
+    {
+    strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    }
+    |exp GE exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp L exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp G exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp INC{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, " ");}
+    |exp DEC{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, " ");}
+    |INC exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, " ");}
+    |DEC exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, " ");}
+    |exp XOR exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp EQ exp {strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp NEQ exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp ASSIGN exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |type variable ASSIGN exp {strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
     {
         insert($1, $2, $4, 4);
+        {strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
     }
     
     ;
+    
+//for loop
+condExp1
+    :exp AND exp {
+        strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
+     }
+    |exp LAND exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp OR exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp LOR exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp LE exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp GE exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp L exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp G exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp INC{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, "--");}
+    |exp DEC{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, "--");}
+    |INC exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, "--");}
+    |DEC exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, "--");}
+    |exp XOR exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp EQ exp {strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp NEQ exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |exp ASSIGN exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
+    |type variable ASSIGN exp 
+    {
+        insert($1, $2, $4, 4);
+        strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
+    }
+    
+    ;
+    
+    
 //for loop ... 
 forExp
-    :FOR OP for1 SEMICOLON for2 SEMICOLON for3 CP OB stateTemp CB
+    :FOR OP for1 SEMICOLON for2 SEMICOLON for3 CP OB loopStatement CB
     {
-        CreateNode("forExp", "Statement", 2);
+        CreateNode("forExp", "LoopStatement", 2);
         CreateNode("forExp", "for3", 6);
         CreateNode("forExp", "for2", 6);
         CreateNode("forExp", "for1", 6);
@@ -362,7 +476,7 @@ for1
         CreateNode("for1", $4, 0);
         CreateNode("for1", "=", 0);
         CreateNode("for1", $2, 0);
-        CreateNode("for1", "type", 1);       
+        CreateNode("for1", $1, 0);       
     }
     | type variable ASSIGN lhs
     {
@@ -370,7 +484,7 @@ for1
         CreateNode("for1", $4, 0);
         CreateNode("for1", "=", 0);
         CreateNode("for1", $2, 0);
-        CreateNode("for1", "type", 1);
+        CreateNode("for1", $1,0);
     }
     |variable ASSIGN lhs COMMA for1
     {
@@ -398,23 +512,54 @@ for1
 
 for2
     :
-    condExp
+    condExp{
+        CreateNode("for2", tempArr3, 0);
+        CreateNode("for2", tempArr2, 0);
+        CreateNode("for2", tempArr1, 0);
+    }
     |
     ;
 for3
-    :condExp
+    :condExp1
+    {
+        CreateNode("for3", tempArr3, 0);
+        CreateNode("for3", tempArr2, 0);
+        CreateNode("for3", tempArr1, 0);
+    }
     |
     ;
     
 //while loop .. 
 whileExp
-    :WHILE OP condExp CP OB stateTemp CB
+    :WHILE OP condExp CP OB wloopStatement CB{
+        CreateNode("whileExp", "wLoopStatement", 2);
+        CreateNode("whileExp", tempArr3, 0);
+        CreateNode("whileExp", tempArr2, 0);
+        CreateNode("whileExp", tempArr1, 0);
+        CreateNode("whileExp", "while", 0);
+    }
     ;
 
 ifElse
-    :IF OP condExp CP OB stateTemp CB
-    |IF OP condExp CP OB stateTemp CB ELSE ifElse
-    |OB stateTemp CB
+    :IF OP condExp CP OB ifloopStatement CB {
+        CreateNode("ifElse", "ifLoopStatement", 2);
+        CreateNode("ifElse", tempArr3, 0);
+        CreateNode("ifElse", tempArr2, 0);
+        CreateNode("ifElse", tempArr1, 0);
+        CreateNode("ifElse", "if",0 );
+    }
+    |IF OP condExp CP OB ifloopStatement CB ELSE ifElse{
+        CreateNode("ifElse", "ifElse", 7);
+        CreateNode("ifElse", "else", 0);
+        CreateNode("ifElse", "ifLoopStatement", 2);
+        CreateNode("ifElse", tempArr3, 0);
+        CreateNode("ifElse", tempArr2, 0);
+        CreateNode("ifElse", tempArr1, 0);
+        CreateNode("ifElse", "if",0 );
+    }
+    |OB ifloopStatement CB{
+        CreateNode("ifElse", "ifLoopStatement", 2);
+    }
     ;
 
 %%

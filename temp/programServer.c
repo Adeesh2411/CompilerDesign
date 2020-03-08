@@ -328,8 +328,10 @@ void Inorder(node *Start, int level){
         Start->level = level;
         if(!Start->nLink)
             strcpy(Start->name , cat(Start->name, childLevel++));
-        else
+        else{
+            
             strcpy(Start->name , cat(Start->name, level));
+         }
         strcpy(Start->parent , cat(Start->parent, level-1));
        // printf("%s \n",Start->name);
     }

@@ -77,6 +77,9 @@
 	FILE *tempFile;
 	FILE *treeFile;
 	char tempArr[100];
+	char tempArr1[100];
+	char tempArr2[100];
+	char tempArr3[100];
 	
 	//for tree
     int expCount = 0;

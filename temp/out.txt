@@ -2,4 +2,5 @@ line no	type	name	value	bscope	scope	Gscope
 2,int,global,10,0,0,1
 4,int,InsideMain1,10,0,1,0
 5,int,InsideMain2,10,0,1,0
-7,int::func,main,--,1,0,1
+6,int,InsideMain3,10,0,1,0
+8,int::func,main,--,1,0,1
