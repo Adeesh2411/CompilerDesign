@@ -1,6 +1,11 @@
 line no	type	name	value	bscope	scope	Gscope
-2,int,global,10,0,0,1
-4,int,InsideMain1,10,0,1,0
-5,int,InsideMain2,10,0,1,0
-6,int,InsideMain3,10,0,1,0
-8,int::func,main,--,1,0,1
+4,int,global,12,0,0,1
+5,int,g,10,0,0,1
+8,int,a,100,0,1,0
+9,int,b,100,0,1,0
+11,int,ff,10,0,2,0
+12,int,a1,10,0,2,0
+13,int,g,10,0,2,0
+16,int,wh,10,0,2,0
+17,int,eh1,11,0,2,0
+19,int::func,main,--,1,0,1

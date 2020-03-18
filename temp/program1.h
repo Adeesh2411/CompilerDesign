@@ -28,8 +28,7 @@
 
     extern bool exprFlag;
     extern int exprCount;
-    bool loopFlag = false;
-    bool checkFlag = false;
+
     
     int comaflag = 0;
     int ck =0;
@@ -66,9 +65,10 @@
 	 }T,Tarr[20];
 	   
 	   
-	bool funcFlag;
+	bool funcFlag = false;
     int funcCount = 0;
-    	   
+    bool loopFlag = false;
+
 	struct dtemp{
 	    char name[20];
 	}dtemparr[100];
@@ -88,27 +88,28 @@
 	int childLevel = 100;
 	bool checkTree[2000];
 	
-	int loopval=0;
-	
-	typedef struct stack{
-	    char name[20];
-	    int start;
-	        
-	}stack;
-	stack *Stack[20];
-	int sp = 0;
-	
+	char* Stack[100];
+	int stI = 0;
 	int interNo = 0;
 	
 	typedef struct node{
-	    char parent[50];
-	    char name[50];
+	    char parent[20];
+	    char name[20];
 	    struct node *childArrLink[20];
 	    int nLink;
 	    int temp;
 	    int level;
 	    bool isT;
+        struct node *prev, *next, *newLink;
+
 	}node;
+
+    typedef struct List{
+        node *head;
+        node *tail;
+    }list,listFunc[10], listLoop[10];
+
+    int lf = 0,ll=0;
 
 	int tl=0;
 	node* treeLink[2000];
@@ -134,11 +135,8 @@
 	void CreateTree();  //for Creating tree using the linkArr
 	void Inorder(node *, int level); // inorder traversal of tree
 	char *cat(char*, int); // concat two strings
-	char *cat1(char*, int); // concat two strings
 	void AssignLink(int pNo); //
 	void CreateExprNode(char*, char*);// 
-	void AssignLinkRev(int);//Assign link to the
-	void generateCode(int, char*, char*, char*);// generate intermediateCode
-	void addLevelNo();// for avoiding same name node
-	stack* pop();// pop from the stack
-	void push(stack *node);// push to stack
+	void AssignLinkRev(int);//
+	void generateCode(int, char*, char*, char*);//
+	void addLevelNo();//

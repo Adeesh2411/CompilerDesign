@@ -245,17 +245,22 @@ char* intToStr(char* s, int n){
 }
 
 void CreateNode(char *parent, char* name, int n){
-    node *new = (node*)malloc(sizeof(node));
-    strcpy(new ->parent, parent);
-    strcpy(new->name, name);
+    node *temp = (node*)malloc(sizeof(node));
+    strcpy(temp->name, name);
+    strcpy(temp->parent, parent);
+    temp->nLink = n;
     
-    new->nLink =  n;
-    treeLink[tl++] = new;
-    new->temp =0;
+    if(list.head == NULL){
+        temp->prev = temp->next =NULL;
+        list.head = list.tail =  temp;
+    }
+
+    if(funcFlag){
+        temp->newLink = 
+    }
+    else if(loopFlag)
     
-    
-    if(!strcmp(name,"declaration") || !strcmp(name,"") ) new->isT = true;
-    else new->isT = false;
+   
 }
 
 node *getParent(char *name, int index){
@@ -365,7 +370,7 @@ void addLevelNo(){
             if(!strcmp(Atemp, treeLink[k]->name)){
                 strcpy(treeLink[i]->name, cat(treeLink[i]->name, tempNo));
                 tempNo++;
-                //printf("%s\n",treeLink[i]->name);
+                printf("%s\n",treeLink[i]->name);
                 break;
             
             }
@@ -373,12 +378,4 @@ void addLevelNo(){
             --k;
         }
     }
-}
-
-char *cat1(char *s, int w){
-    char tt[30];
-    sprintf(tt, " (%d)",w );
-    strcpy(tempArr1,  s);
-    strcat(tempArr1, tt);
-    return tempArr1;
 }

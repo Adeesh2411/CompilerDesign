@@ -15,7 +15,7 @@ with open("tree.txt", 'r') as f:
         Node(name, parent = find_by_attr(root, par))
 
     #for pre,_,node in RenderTree(root):
-    #    print("%s%s" %(pre, node.name))
+        #print("%s%s" %(pre, node.name))
         
 
 
