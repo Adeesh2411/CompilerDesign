@@ -608,8 +608,8 @@ static const yytype_int16 yyrline[] =
      548,   549,   550,   551,   552,   553,   554,   555,   555,   565,
      568,   569,   570,   571,   572,   573,   574,   575,   576,   577,
      578,   579,   580,   581,   582,   583,   594,   607,   613,   623,
-     631,   642,   652,   657,   662,   665,   671,   676,   686,   690,
-     697,   706,   711
+     631,   642,   652,   657,   662,   665,   671,   676,   687,   691,
+     698,   707,   712
 };
 #endif
 
@@ -2606,19 +2606,20 @@ yyreduce:
         CreateNode("whileExp", tempArr3, 0);
         CreateNode("whileExp", tempArr2, 0);
         CreateNode("whileExp", tempArr1, 0);
+        printf("%s\n", tempArr1);
         CreateNode("whileExp", "while", 0);
     }
-#line 2612 "y.tab.c"
+#line 2613 "y.tab.c"
     break;
 
   case 118:
-#line 686 "program_test.y"
+#line 687 "program_test.y"
           {loopval++;}
-#line 2618 "y.tab.c"
+#line 2619 "y.tab.c"
     break;
 
   case 119:
-#line 690 "program_test.y"
+#line 691 "program_test.y"
                                                 {
         CreateNode("ifElse", "ifLoopStatement", 2);
         CreateNode("ifElse", tempArr3, 0);
@@ -2626,11 +2627,11 @@ yyreduce:
         CreateNode("ifElse", tempArr1, 0);
         CreateNode("ifElse", "if",0 );
     }
-#line 2630 "y.tab.c"
+#line 2631 "y.tab.c"
     break;
 
   case 120:
-#line 697 "program_test.y"
+#line 698 "program_test.y"
                                                            {
         CreateNode("ifElse", "ifElse", 7);
         CreateNode("ifElse", "else", 0);
@@ -2640,25 +2641,25 @@ yyreduce:
         CreateNode("ifElse", tempArr1, 0);
         CreateNode("ifElse", "if",0 );
     }
-#line 2644 "y.tab.c"
+#line 2645 "y.tab.c"
     break;
 
   case 121:
-#line 706 "program_test.y"
+#line 707 "program_test.y"
                           {
         CreateNode("ifElse", "ifLoopStatement", 2);
     }
-#line 2652 "y.tab.c"
+#line 2653 "y.tab.c"
     break;
 
   case 122:
-#line 711 "program_test.y"
+#line 712 "program_test.y"
        {loopval++;}
-#line 2658 "y.tab.c"
+#line 2659 "y.tab.c"
     break;
 
 
-#line 2662 "y.tab.c"
+#line 2663 "y.tab.c"
 
       default: break;
     }
@@ -2890,7 +2891,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 713 "program_test.y"
+#line 714 "program_test.y"
 
 
 

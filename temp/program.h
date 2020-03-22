@@ -82,6 +82,7 @@
 	char tempArr1[100];
 	char tempArr2[100];
 	char tempArr3[100];
+	char tempArr4[100];
 	
 	//for tree
     int expCount = 0;
@@ -112,8 +113,12 @@
 
 	int tl=0;
 	node* treeLink[2000];
+	node *exprLink[100];
 	int ScopeLevel = 0;
 	
+	char* exprPtr[100];
+	int exprPtrCt=0;
+	char parExp[10] = "parExp";
 	
 	//function declarations used
 	void displayTable();  //for displaying symbol table..
@@ -142,3 +147,6 @@
 	void addLevelNo();// for avoiding same name node
 	stack* pop();// pop from the stack
 	void push(stack *node);// push to stack
+	void Addexp(char *);//add the name
+	char *popTop();//remove the top element
+	bool isOp();//

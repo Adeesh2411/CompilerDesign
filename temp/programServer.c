@@ -334,7 +334,7 @@ void Inorder(node *Start, int level){
             strcpy(Start->name , cat(Start->name, level));
          }
         strcpy(Start->parent , cat(Start->parent, level-1));
-        //printf("%s \t",Start->name);
+        printf("%s \t",Start->name);
     }
 }
 
@@ -378,7 +378,24 @@ void addLevelNo(){
 char *cat1(char *s, int w){
     char tt[30];
     sprintf(tt, " (%d)",w );
-    strcpy(tempArr1,  s);
-    strcat(tempArr1, tt);
-    return tempArr1;
+    strcpy(tempArr4,  s);
+    strcat(tempArr4, tt);
+    return tempArr4;
+}
+
+void Addexp(char *name){
+    exprPtr[exprPtrCt++]= (char*)malloc(sizeof(char)*strlen(name));
+    strcpy(exprPtr[exprPtrCt-1], name);
+    return;
+}
+    
+char *popTop(){
+    return exprPtr[--exprPtrCt];
+}    
+
+bool isOp(){
+    if(exprPtrCt == 0) return false;
+    printf("aa=%d\n", exprPtrCt);
+    if(exprPtr[exprPtrCt-1][0] =='+' || exprPtr[exprPtrCt-1][0] == '*' || exprPtr[exprPtrCt-1][0] == '/' || exprPtr[exprPtrCt-1][0] =='-' ) return true;
+    return false;
 }

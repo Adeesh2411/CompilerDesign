@@ -678,6 +678,7 @@ whileExp
         CreateNode("whileExp", tempArr3, 0);
         CreateNode("whileExp", tempArr2, 0);
         CreateNode("whileExp", tempArr1, 0);
+        printf("%s\n", tempArr1);
         CreateNode("whileExp", "while", 0);
     }
     ;
