@@ -1899,7 +1899,7 @@ yyreduce:
         TTT->childArrLink[0] = exprLink[expL-1];
         strcpy(TTT->childArrLink[0]->parent, "expr");
         explPrev = expL;
-        exprNo[exprNoTemp++] = explPrev-1;
+        exprNo[exprNoTemp++] = explPrev;
         
         //CreateExprNode(strtok(exprToken,"!"), $3);
         //CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
