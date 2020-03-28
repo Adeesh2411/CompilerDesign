@@ -112,10 +112,14 @@
 	}node;
 
 	int tl=0;
-	node* treeLink[2000];
-	node *exprLink[100];
-	int ScopeLevel = 0;
-	
+	node* treeLink[2000];//all the nodes are attached here
+	node *exprLink[100]; // for expression handling
+	int exprNo[100]; // end node handling
+	int  exprNoTemp = 0;
+	int ScopeLevel = 0; // for attacihing level to each node
+	int expL=0;
+	int explPrev = 0;
+	int expHead=1;
 	char* exprPtr[100];
 	int exprPtrCt=0;
 	char parExp[10] = "parExp";
@@ -134,7 +138,7 @@
 	void displayTree(); // for printing AST
 	char* intToStr(char* s, int n); //for AST same name
 	//void insertNode(char *, char*, char *,char*,char*,bool); //for inserting node to a tree
-	void CreateNode(char *, char*, int);    //Creating the node of given name, parent name
+	node* CreateNode(char *, char*, int);    //Creating the node of given name, parent name
 	node *getParent(char *name, int index); //getNode of given name
 	void CreateTree();  //for Creating tree using the linkArr
 	void Inorder(node *, int level); // inorder traversal of tree
@@ -145,8 +149,5 @@
 	void AssignLinkRev(int);//Assign link to the
 	void generateCode(int, char*, char*, char*);// generate intermediateCode
 	void addLevelNo();// for avoiding same name node
-	stack* pop();// pop from the stack
-	void push(stack *node);// push to stack
-	void Addexp(char *);//add the name
-	char *popTop();//remove the top element
-	bool isOp();//
+    void CreateExprNodeHandle(char *);// for expression handling.
+	void AssignParentLink(node *cur);//

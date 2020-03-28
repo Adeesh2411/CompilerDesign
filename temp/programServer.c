@@ -230,9 +230,30 @@ char *correct(char *val, char *type){
 
 
 void displayTree(){
+    
+    
+
     for(int i=tl-2; i>=0; i--){
         fprintf(treeFile, "%s,%s\n", treeLink[i]->parent, treeLink[i]->name);
     }
+    for(int i=exprNoTemp-1;i>=0;i--){
+        //printf("%d\n",exprNo[i]);
+        AssignParentLink(exprLink[ exprNo[i]-1 ]);
+    }    
+    for(int i=expL-1;i>=0; i--) fprintf(treeFile, "%s,%s\n", exprLink[i]->parent, exprLink[i]->name);
+}
+
+
+void AssignParentLink(node *cur){
+    if(!cur->childArrLink[0]) {
+        return;
+    }
+
+    strcpy(cur->childArrLink[0]->parent, cur->name);
+    strcpy(cur->childArrLink[1]->parent, cur->name);
+    
+    AssignParentLink(cur->childArrLink[0]);
+    AssignParentLink(cur->childArrLink[1]);    
 }
 
 
@@ -244,7 +265,7 @@ char* intToStr(char* s, int n){
     return tempArr;    
 }
 
-void CreateNode(char *parent, char* name, int n){
+node* CreateNode(char *parent, char* name, int n){
     node *new = (node*)malloc(sizeof(node));
     strcpy(new ->parent, parent);
     strcpy(new->name, name);
@@ -256,6 +277,7 @@ void CreateNode(char *parent, char* name, int n){
     
     if(!strcmp(name,"declaration") || !strcmp(name,"") ) new->isT = true;
     else new->isT = false;
+    return new;
 }
 
 node *getParent(char *name, int index){
@@ -382,20 +404,40 @@ char *cat1(char *s, int w){
     strcat(tempArr4, tt);
     return tempArr4;
 }
+  
 
-void Addexp(char *name){
-    exprPtr[exprPtrCt++]= (char*)malloc(sizeof(char)*strlen(name));
-    strcpy(exprPtr[exprPtrCt-1], name);
-    return;
-}
-    
-char *popTop(){
-    return exprPtr[--exprPtrCt];
-}    
-
-bool isOp(){
-    if(exprPtrCt == 0) return false;
-    printf("aa=%d\n", exprPtrCt);
-    if(exprPtr[exprPtrCt-1][0] =='+' || exprPtr[exprPtrCt-1][0] == '*' || exprPtr[exprPtrCt-1][0] == '/' || exprPtr[exprPtrCt-1][0] =='-' ) return true;
+bool isOp(char *temp){
+    if(!strcmp(temp, "+") || !strcmp(temp, "-") || !strcmp(temp, "*") || !strcmp(temp, "/")) return true;
     return false;
+}
+
+void CreateExprNodeHandle(char *exp){
+    node *new = (node*)malloc(sizeof(node));
+    strcpy(new ->parent, " -- ");
+    strcpy(new->name, exp);
+    
+    new->nLink =  2;
+    exprLink[expL++] = new;
+    new->temp =0;
+}
+
+void AssignExprLinkHandle(int start){
+    bool visit[expL];
+    memset(visit, false, sizeof(visit));
+    for(int i=start;i<expL; ++i){
+        if(isOp(exprLink[i]->name)){
+            int localK = i-1;
+            int nLinkExpr = 0;
+            while(localK >=0){
+                 if(nLinkExpr == 2) 
+                    break;
+                 if(!visit[localK]){
+                    exprLink[i]->childArrLink[nLinkExpr++] = exprLink[localK];
+                    visit[localK] = true;
+                 }
+                --localK;
+            }           
+        }         
+    }
+    
 }

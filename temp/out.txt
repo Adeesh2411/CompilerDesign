@@ -1,4 +1,5 @@
 line no	type	name	value	bscope	scope	Gscope
 4,int,global,21,0,0,1
-9,int,wh,10,0,2,0
-11,int::func,main,--,1,0,1
+7,int,h,10,0,1,0
+9,int,Adeesh,111,0,1,0
+10,int::func,main,--,1,0,1

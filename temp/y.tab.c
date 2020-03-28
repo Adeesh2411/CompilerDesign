@@ -597,19 +597,19 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    21,    21,    38,    42,    52,    57,    63,    69,   113,
-     124,   129,   149,   156,   163,   181,   225,   236,   241,   261,
-     268,   275,   294,   295,   296,   297,   300,   306,   316,   317,
-     318,   322,   327,   331,   338,   341,   344,   349,   356,   361,
-     369,   382,   387,   388,   392,   398,   402,   405,   408,   416,
-     425,   428,   431,   437,   442,   447,   455,   463,   468,   473,
-     478,   483,   487,   492,   497,   502,   507,   511,   516,   521,
-     526,   530,   533,   535,   537,   540,   544,   545,   546,   547,
-     548,   549,   550,   551,   552,   553,   554,   555,   555,   565,
-     568,   569,   570,   571,   572,   573,   574,   575,   576,   577,
-     578,   579,   580,   581,   582,   583,   594,   607,   613,   623,
-     631,   642,   652,   657,   662,   665,   671,   676,   687,   691,
-     698,   707,   712
+       0,    21,    21,    40,    44,    54,    59,    65,    71,   115,
+     126,   131,   159,   166,   173,   191,   235,   246,   251,   279,
+     286,   293,   312,   313,   314,   315,   318,   324,   334,   335,
+     336,   340,   344,   348,   354,   358,   362,   367,   374,   379,
+     387,   400,   405,   406,   410,   416,   420,   423,   426,   434,
+     443,   446,   449,   455,   460,   465,   473,   481,   486,   491,
+     496,   501,   505,   510,   515,   520,   525,   529,   534,   539,
+     544,   548,   551,   553,   555,   558,   562,   563,   564,   565,
+     566,   567,   568,   569,   570,   571,   572,   573,   573,   583,
+     586,   587,   588,   589,   590,   591,   592,   593,   594,   595,
+     596,   597,   598,   599,   600,   601,   612,   625,   631,   641,
+     649,   660,   670,   675,   680,   683,   689,   694,   705,   709,
+     716,   725,   730
 };
 #endif
 
@@ -1623,6 +1623,8 @@ yyreduce:
              
              displayTable();
              
+            // AssignLinkHeader();
+             
              CreateTree();
              
              Inorder(treeLink[tl-1],0);
@@ -1631,47 +1633,47 @@ yyreduce:
              printf("\n\n");
              displayTree();             
          }
-#line 1635 "y.tab.c"
+#line 1637 "y.tab.c"
     break;
 
   case 3:
-#line 39 "program_test.y"
+#line 41 "program_test.y"
         {
             CreateNode("header", (yyvsp[0].txt), 1);
         }
-#line 1643 "y.tab.c"
+#line 1645 "y.tab.c"
     break;
 
   case 4:
-#line 43 "program_test.y"
+#line 45 "program_test.y"
         {
             CreateNode("header", (yyvsp[-1].txt), 2);
             CreateNode("header","header",2);
         }
-#line 1652 "y.tab.c"
+#line 1654 "y.tab.c"
     break;
 
   case 5:
-#line 53 "program_test.y"
+#line 55 "program_test.y"
     {
         CreateNode("nextPart","declaration",2);
         CreateNode("nextPart", "nextPart", 2);       
     }
-#line 1661 "y.tab.c"
+#line 1663 "y.tab.c"
     break;
 
   case 6:
-#line 58 "program_test.y"
+#line 60 "program_test.y"
     {
         CreateNode("nextPart", "function", 4);
         CreateNode("nextPart", "nextPart", 2);
 
     }
-#line 1671 "y.tab.c"
+#line 1673 "y.tab.c"
     break;
 
   case 8:
-#line 69 "program_test.y"
+#line 71 "program_test.y"
                               {
         
             if(!comaflag){
@@ -1715,11 +1717,11 @@ yyreduce:
             }       
            
     }
-#line 1719 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 9:
-#line 114 "program_test.y"
+#line 116 "program_test.y"
     {
         if(!checkTableToAccess((yyvsp[-3].txt))){
             printf("ERROR : Undclared Type \'%s\' in Line No %d\n",(yyvsp[-3].txt), lineNo);
@@ -1728,17 +1730,17 @@ yyreduce:
             insert("", (yyvsp[-3].txt), (yyvsp[-1].txt), 2); // flag 2 for updating variable.
         }
     }
-#line 1732 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 10:
-#line 124 "program_test.y"
+#line 126 "program_test.y"
                      {strcpy(prevToken, curToken); strcpy(curToken, "");}
-#line 1738 "y.tab.c"
+#line 1740 "y.tab.c"
     break;
 
   case 11:
-#line 129 "program_test.y"
+#line 131 "program_test.y"
                               { 
 	    if(!comaflag){
       	    strcpy(T.name,(yyvsp[-2].txt));
@@ -1754,38 +1756,46 @@ yyreduce:
 	    
         //
         
-        CreateExprNode(strtok(exprToken,"!"), (yyvsp[0].txt));
-        CreateNode("AssignList",(yyvsp[0].txt),exprCount);
+         AssignExprLinkHandle(explPrev);
+         
+        node *TTT = CreateNode("AssignList", "expr", 1);
+        //printf("entered\n");
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev;
+        //CreateExprNode(strtok(exprToken,"!"), $3);
+        //CreateNode("AssignList",$3,exprCount);
         CreateNode("AssignList", "=", 0);
         CreateNode("AssignList",(yyvsp[-2].txt),0);
 	}
-#line 1763 "y.tab.c"
+#line 1773 "y.tab.c"
     break;
 
   case 12:
-#line 150 "program_test.y"
+#line 160 "program_test.y"
         {
 	    comaflag = 1;   
 	    strcpy(Tarr[ck++].name,(yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	    
 	}
-#line 1774 "y.tab.c"
+#line 1784 "y.tab.c"
     break;
 
   case 13:
-#line 156 "program_test.y"
+#line 166 "program_test.y"
                                              {
 	    comaflag = 1;
 	    strcpy(Tarr[ck++].name,(yyvsp[-4].txt));
 	    strcpy(Tarr[ck-1].value, (yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	}
-#line 1785 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 14:
-#line 163 "program_test.y"
+#line 173 "program_test.y"
                    {
 	    if(!comaflag){
     	    strcpy(T.name , (yyvsp[0].txt));
@@ -1796,11 +1806,11 @@ yyreduce:
 	        Tarr[ck-1].dflag = 4;
 	    }    
 	    }
-#line 1800 "y.tab.c"
+#line 1810 "y.tab.c"
     break;
 
   case 15:
-#line 181 "program_test.y"
+#line 191 "program_test.y"
                                   {
         
             if(!comaflag){
@@ -1844,11 +1854,11 @@ yyreduce:
             }       
            
     }
-#line 1848 "y.tab.c"
+#line 1858 "y.tab.c"
     break;
 
   case 16:
-#line 226 "program_test.y"
+#line 236 "program_test.y"
     {
         if(!checkTableToAccess((yyvsp[-3].txt))){
             printf("ERROR : Undclared Type \'%s\' in Line No %d\n",(yyvsp[-3].txt), lineNo);
@@ -1857,17 +1867,17 @@ yyreduce:
             insert("", (yyvsp[-3].txt), (yyvsp[-1].txt), 2); // flag 2 for updating variable.
         }
     }
-#line 1861 "y.tab.c"
+#line 1871 "y.tab.c"
     break;
 
   case 17:
-#line 236 "program_test.y"
+#line 246 "program_test.y"
                      {strcpy(prevToken, curToken); strcpy(curToken, "");}
-#line 1867 "y.tab.c"
+#line 1877 "y.tab.c"
     break;
 
   case 18:
-#line 241 "program_test.y"
+#line 251 "program_test.y"
                               { 
 	    if(!comaflag){
       	    strcpy(T.name,(yyvsp[-2].txt));
@@ -1882,39 +1892,47 @@ yyreduce:
 	    }
 	    
         //
+        AssignExprLinkHandle(explPrev);
         
-        CreateExprNode(strtok(exprToken,"!"), (yyvsp[0].txt));
-        CreateNode(cat1("AssignListLoop", loopval),(yyvsp[0].txt),exprCount);
+        node *TTT = CreateNode(cat1("AssignListLoop", loopval), "expr", 1);
+        
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev-1;
+        
+        //CreateExprNode(strtok(exprToken,"!"), $3);
+        //CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
         CreateNode(cat1("AssignListLoop", loopval), "=", 0);
         CreateNode(cat1("AssignListLoop", loopval),(yyvsp[-2].txt),0);
 	}
-#line 1892 "y.tab.c"
+#line 1910 "y.tab.c"
     break;
 
   case 19:
-#line 262 "program_test.y"
+#line 280 "program_test.y"
         {
 	    comaflag = 1;   
 	    strcpy(Tarr[ck++].name,(yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	    
 	}
-#line 1903 "y.tab.c"
+#line 1921 "y.tab.c"
     break;
 
   case 20:
-#line 268 "program_test.y"
+#line 286 "program_test.y"
                                                  {
 	    comaflag = 1;
 	    strcpy(Tarr[ck++].name,(yyvsp[-4].txt));
 	    strcpy(Tarr[ck-1].value, (yyvsp[-2].txt));
 	    Tarr[ck-1].dflag = 1;
 	}
-#line 1914 "y.tab.c"
+#line 1932 "y.tab.c"
     break;
 
   case 21:
-#line 275 "program_test.y"
+#line 293 "program_test.y"
                    {
 	    if(!comaflag){
     	    strcpy(T.name , (yyvsp[0].txt));
@@ -1925,25 +1943,25 @@ yyreduce:
 	        Tarr[ck-1].dflag = 4;
 	    }    
 	    }
-#line 1929 "y.tab.c"
+#line 1947 "y.tab.c"
     break;
 
   case 23:
-#line 295 "program_test.y"
+#line 313 "program_test.y"
           { }
-#line 1935 "y.tab.c"
+#line 1953 "y.tab.c"
     break;
 
   case 26:
-#line 300 "program_test.y"
+#line 318 "program_test.y"
         {
         
     }
-#line 1943 "y.tab.c"
+#line 1961 "y.tab.c"
     break;
 
   case 27:
-#line 306 "program_test.y"
+#line 324 "program_test.y"
               {
         if(!checkTableToAccess((yyvsp[0].txt))){
             printf("ERROR : variable \'%s\' not defined in lineNo %d\n",(yyvsp[0].txt),lineNo);
@@ -1954,99 +1972,99 @@ yyreduce:
             strcpy((yyval.txt), getValue((yyvsp[0].txt)));
         }
     }
-#line 1958 "y.tab.c"
+#line 1976 "y.tab.c"
     break;
 
   case 30:
-#line 318 "program_test.y"
+#line 336 "program_test.y"
          {(yyval.txt) = (yyvsp[0].txt);}
-#line 1964 "y.tab.c"
+#line 1982 "y.tab.c"
     break;
 
   case 31:
-#line 322 "program_test.y"
+#line 340 "program_test.y"
                   {
          (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 1);
-         //generateCode(interNo, $1, $2, $3);
-       
+         CreateExprNodeHandle("+");
     }
-#line 1974 "y.tab.c"
+#line 1991 "y.tab.c"
     break;
 
   case 32:
-#line 327 "program_test.y"
+#line 344 "program_test.y"
                   {
+        CreateExprNodeHandle("-");
        (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 2);
-      // generateCode(interNo, $1, $2, $3);
-    }
-#line 1983 "y.tab.c"
-    break;
-
-  case 33:
-#line 331 "program_test.y"
-           {
-        strcpy((yyval.txt), (yyvsp[0].txt));
-       // generateCode(interNo, $1, $2, $3);
-    }
-#line 1992 "y.tab.c"
-    break;
-
-  case 34:
-#line 338 "program_test.y"
-                   {
-       (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 3);  
     }
 #line 2000 "y.tab.c"
     break;
 
-  case 35:
-#line 341 "program_test.y"
-                   {
-       (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 4);
+  case 33:
+#line 348 "program_test.y"
+           {
+        strcpy((yyval.txt), (yyvsp[0].txt));
     }
 #line 2008 "y.tab.c"
     break;
 
-  case 36:
-#line 344 "program_test.y"
-         {
-       
-        strcpy((yyval.txt),(yyvsp[0].txt));
+  case 34:
+#line 354 "program_test.y"
+                   {
+        CreateExprNodeHandle("*");
+       (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 3);  
     }
 #line 2017 "y.tab.c"
     break;
 
-  case 37:
-#line 349 "program_test.y"
-               {
-       
-        strcpy((yyval.txt), (yyvsp[-1].txt));
+  case 35:
+#line 358 "program_test.y"
+                   {
+        CreateExprNodeHandle("/");
+       (yyval.txt) = operate((yyvsp[-2].txt), (yyvsp[0].txt), 4);
     }
 #line 2026 "y.tab.c"
     break;
 
-  case 38:
-#line 356 "program_test.y"
+  case 36:
+#line 362 "program_test.y"
          {
+       CreateExprNodeHandle((yyvsp[0].txt));
+        strcpy((yyval.txt),(yyvsp[0].txt));
+    }
+#line 2035 "y.tab.c"
+    break;
+
+  case 37:
+#line 367 "program_test.y"
+               {
        
+        strcpy((yyval.txt), (yyvsp[-1].txt));
+    }
+#line 2044 "y.tab.c"
+    break;
+
+  case 38:
+#line 374 "program_test.y"
+         {
+       CreateExprNodeHandle((yyvsp[0].txt));
         strcpy((yyval.txt), (yyvsp[0].txt));
         
     }
-#line 2036 "y.tab.c"
+#line 2054 "y.tab.c"
     break;
 
   case 39:
-#line 361 "program_test.y"
+#line 379 "program_test.y"
                 {
        
         strcpy((yyval.txt),(yyvsp[-1].txt));
         
     }
-#line 2046 "y.tab.c"
+#line 2064 "y.tab.c"
     break;
 
   case 40:
-#line 370 "program_test.y"
+#line 388 "program_test.y"
     {
         
         insert((yyvsp[-8].txt),(yyvsp[-7].txt),"--",3 );
@@ -2057,47 +2075,47 @@ yyreduce:
         funcFlag = false;
        
     }
-#line 2061 "y.tab.c"
+#line 2079 "y.tab.c"
     break;
 
   case 41:
-#line 382 "program_test.y"
+#line 400 "program_test.y"
         {funcFlag = true;
         
     }
-#line 2069 "y.tab.c"
+#line 2087 "y.tab.c"
     break;
 
   case 44:
-#line 392 "program_test.y"
+#line 410 "program_test.y"
                              {
         CreateNode("funcPara",(yyvsp[0].txt),0);
         CreateNode("funcPara","=",0);
         CreateNode("funcPara", (yyvsp[-2].txt), 0);
         CreateNode("funcPara", (yyvsp[-3].txt), 0);
     }
-#line 2080 "y.tab.c"
+#line 2098 "y.tab.c"
     break;
 
   case 45:
-#line 398 "program_test.y"
+#line 416 "program_test.y"
                    {
         CreateNode("funcPara",(yyvsp[0].txt),0);
         CreateNode("funcPara", (yyvsp[-1].txt), 0);
     }
-#line 2089 "y.tab.c"
+#line 2107 "y.tab.c"
     break;
 
   case 46:
-#line 402 "program_test.y"
+#line 420 "program_test.y"
              {
         CreateNode("funcPara","nextPara",6);
     }
-#line 2097 "y.tab.c"
+#line 2115 "y.tab.c"
     break;
 
   case 48:
-#line 408 "program_test.y"
+#line 426 "program_test.y"
                                             {
         CreateNode("nextPara","funcPara",3);
         CreateNode("nextPara", ",", 0);
@@ -2106,67 +2124,67 @@ yyreduce:
         CreateNode("nextPara",(yyvsp[-4].txt), 0);
         CreateNode("nextPara", (yyvsp[-5].txt), 0);
     }
-#line 2110 "y.tab.c"
+#line 2128 "y.tab.c"
     break;
 
   case 49:
-#line 416 "program_test.y"
+#line 434 "program_test.y"
                                  {
         CreateNode("nextPara","funcPara",3);
         CreateNode("nextPara", ",", 0);
         CreateNode("nextPara",(yyvsp[-2].txt), 0);
         CreateNode("nextPara", (yyvsp[-3].txt), 0);
     }
-#line 2121 "y.tab.c"
+#line 2139 "y.tab.c"
     break;
 
   case 50:
-#line 425 "program_test.y"
+#line 443 "program_test.y"
                {
         
     }
-#line 2129 "y.tab.c"
+#line 2147 "y.tab.c"
     break;
 
   case 52:
-#line 432 "program_test.y"
+#line 450 "program_test.y"
     {
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "declaration", 2);
         
     }
-#line 2139 "y.tab.c"
+#line 2157 "y.tab.c"
     break;
 
   case 53:
-#line 438 "program_test.y"
+#line 456 "program_test.y"
     {
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "forExp", 5);
     }
-#line 2148 "y.tab.c"
+#line 2166 "y.tab.c"
     break;
 
   case 54:
-#line 443 "program_test.y"
+#line 461 "program_test.y"
     {
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "whileExp", 5);
     }
-#line 2157 "y.tab.c"
+#line 2175 "y.tab.c"
     break;
 
   case 55:
-#line 448 "program_test.y"
+#line 466 "program_test.y"
     {
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "ifElse", 7);
     }
-#line 2166 "y.tab.c"
+#line 2184 "y.tab.c"
     break;
 
   case 56:
-#line 455 "program_test.y"
+#line 473 "program_test.y"
                                   {
         
         strcpy(tempArr2, cat1("declarationLoop",loopval));
@@ -2175,335 +2193,335 @@ yyreduce:
         CreateNode(cat("LoopStatement",loopval), tempArr2, 2);
         printf("%s\n",tempArr2);
     }
-#line 2179 "y.tab.c"
+#line 2197 "y.tab.c"
     break;
 
   case 57:
-#line 464 "program_test.y"
+#line 482 "program_test.y"
     {
         CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
         CreateNode(cat("LoopStatement",loopval),"forExp",5 );
     }
-#line 2188 "y.tab.c"
-    break;
-
-  case 58:
-#line 469 "program_test.y"
-    {
-        CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
-        CreateNode(cat("LoopStatement",loopval), "whileExp", 5);
-    }
-#line 2197 "y.tab.c"
-    break;
-
-  case 59:
-#line 474 "program_test.y"
-    {
-        CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
-        CreateNode(cat("LoopStatement",loopval), "ifElse", 7);
-    }
 #line 2206 "y.tab.c"
     break;
 
-  case 61:
-#line 483 "program_test.y"
-                                   {
-        CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
-        CreateNode(cat("wLoopStatement",loopval), cat1("declarationLoop",loopval), 2);
+  case 58:
+#line 487 "program_test.y"
+    {
+        CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
+        CreateNode(cat("LoopStatement",loopval), "whileExp", 5);
     }
 #line 2215 "y.tab.c"
     break;
 
-  case 62:
-#line 488 "program_test.y"
+  case 59:
+#line 492 "program_test.y"
     {
-        CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
-        CreateNode(cat("wLoopStatement",loopval),"forExp",5 );
+        CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
+        CreateNode(cat("LoopStatement",loopval), "ifElse", 7);
     }
 #line 2224 "y.tab.c"
     break;
 
-  case 63:
-#line 493 "program_test.y"
-    {
+  case 61:
+#line 501 "program_test.y"
+                                   {
         CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
-        CreateNode(cat("LoopStatement",loopval), "whileExp", 5);
+        CreateNode(cat("wLoopStatement",loopval), cat1("declarationLoop",loopval), 2);
     }
 #line 2233 "y.tab.c"
     break;
 
-  case 64:
-#line 498 "program_test.y"
+  case 62:
+#line 506 "program_test.y"
     {
         CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
-        CreateNode(cat("wLoopStatement",loopval), "ifElse", 7);
+        CreateNode(cat("wLoopStatement",loopval),"forExp",5 );
     }
 #line 2242 "y.tab.c"
     break;
 
-  case 66:
-#line 507 "program_test.y"
-                                    {
-        CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
-        CreateNode(cat("ifLoopStatement",loopval), "declarationLoop", 2);
+  case 63:
+#line 511 "program_test.y"
+    {
+        CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
+        CreateNode(cat("LoopStatement",loopval), "whileExp", 5);
     }
 #line 2251 "y.tab.c"
     break;
 
-  case 67:
-#line 512 "program_test.y"
+  case 64:
+#line 516 "program_test.y"
     {
-        CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
-        CreateNode(cat("ifLoopStatement",loopval),"forExp",5 );
+        CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
+        CreateNode(cat("wLoopStatement",loopval), "ifElse", 7);
     }
 #line 2260 "y.tab.c"
     break;
 
-  case 68:
-#line 517 "program_test.y"
-    {
+  case 66:
+#line 525 "program_test.y"
+                                    {
         CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
-        CreateNode(cat("ifLoopStatement",loopval), "whileExp", 5);
+        CreateNode(cat("ifLoopStatement",loopval), "declarationLoop", 2);
     }
 #line 2269 "y.tab.c"
     break;
 
-  case 69:
-#line 522 "program_test.y"
+  case 67:
+#line 530 "program_test.y"
     {
         CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
-        CreateNode(cat("ifLoopStatement",loopval), "ifElse", 7);
+        CreateNode(cat("ifLoopStatement",loopval),"forExp",5 );
     }
 #line 2278 "y.tab.c"
     break;
 
+  case 68:
+#line 535 "program_test.y"
+    {
+        CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
+        CreateNode(cat("ifLoopStatement",loopval), "whileExp", 5);
+    }
+#line 2287 "y.tab.c"
+    break;
+
+  case 69:
+#line 540 "program_test.y"
+    {
+        CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
+        CreateNode(cat("ifLoopStatement",loopval), "ifElse", 7);
+    }
+#line 2296 "y.tab.c"
+    break;
+
   case 71:
-#line 530 "program_test.y"
+#line 548 "program_test.y"
                  {
        strcpy(tempArr, (yyvsp[-2].txt));strcpy(tempArr, (yyvsp[-1].txt));strcpy(tempArr, (yyvsp[0].txt));
      }
-#line 2286 "y.tab.c"
+#line 2304 "y.tab.c"
     break;
 
   case 72:
-#line 533 "program_test.y"
+#line 551 "program_test.y"
                  { strcpy(tempArr, (yyvsp[-2].txt));strcpy(tempArr, (yyvsp[-1].txt));strcpy(tempArr, (yyvsp[0].txt));
     }
-#line 2293 "y.tab.c"
+#line 2311 "y.tab.c"
     break;
 
   case 73:
-#line 535 "program_test.y"
+#line 553 "program_test.y"
                {strcpy(tempArr, (yyvsp[-2].txt));strcpy(tempArr, (yyvsp[-1].txt));strcpy(tempArr, (yyvsp[0].txt)); 
     }
-#line 2300 "y.tab.c"
+#line 2318 "y.tab.c"
     break;
 
   case 74:
-#line 538 "program_test.y"
+#line 556 "program_test.y"
     {strcpy(tempArr, (yyvsp[-2].txt));strcpy(tempArr, (yyvsp[-1].txt));strcpy(tempArr, (yyvsp[0].txt));
     }
-#line 2307 "y.tab.c"
+#line 2325 "y.tab.c"
     break;
 
   case 75:
-#line 541 "program_test.y"
+#line 559 "program_test.y"
     {
     strcpy(tempArr, (yyvsp[-2].txt));strcpy(tempArr, (yyvsp[-1].txt));strcpy(tempArr, (yyvsp[0].txt));
     }
-#line 2315 "y.tab.c"
-    break;
-
-  case 76:
-#line 544 "program_test.y"
-               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
-#line 2321 "y.tab.c"
-    break;
-
-  case 77:
-#line 545 "program_test.y"
-              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
-#line 2327 "y.tab.c"
-    break;
-
-  case 78:
-#line 546 "program_test.y"
-              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2333 "y.tab.c"
     break;
 
-  case 79:
-#line 547 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
+  case 76:
+#line 562 "program_test.y"
+               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2339 "y.tab.c"
     break;
 
-  case 80:
-#line 548 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
+  case 77:
+#line 563 "program_test.y"
+              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2345 "y.tab.c"
     break;
 
-  case 81:
-#line 549 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
+  case 78:
+#line 564 "program_test.y"
+              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2351 "y.tab.c"
     break;
 
-  case 82:
-#line 550 "program_test.y"
+  case 79:
+#line 565 "program_test.y"
             {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
 #line 2357 "y.tab.c"
     break;
 
-  case 83:
-#line 551 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 80:
+#line 566 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
 #line 2363 "y.tab.c"
     break;
 
-  case 84:
-#line 552 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 81:
+#line 567 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
 #line 2369 "y.tab.c"
     break;
 
-  case 85:
-#line 553 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 82:
+#line 568 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, " ");}
 #line 2375 "y.tab.c"
     break;
 
-  case 86:
-#line 554 "program_test.y"
-                   {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 83:
+#line 569 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2381 "y.tab.c"
     break;
 
-  case 87:
-#line 555 "program_test.y"
-                              {strcpy(tempArr1, (yyvsp[-3].txt));strcpy(tempArr2, (yyvsp[-2].txt));strcpy(tempArr3, (yyvsp[-1].txt));}
+  case 84:
+#line 570 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2387 "y.tab.c"
     break;
 
+  case 85:
+#line 571 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+#line 2393 "y.tab.c"
+    break;
+
+  case 86:
+#line 572 "program_test.y"
+                   {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+#line 2399 "y.tab.c"
+    break;
+
+  case 87:
+#line 573 "program_test.y"
+                              {strcpy(tempArr1, (yyvsp[-3].txt));strcpy(tempArr2, (yyvsp[-2].txt));strcpy(tempArr3, (yyvsp[-1].txt));}
+#line 2405 "y.tab.c"
+    break;
+
   case 88:
-#line 556 "program_test.y"
+#line 574 "program_test.y"
     {
         insert((yyvsp[-4].txt), (yyvsp[-3].txt), (yyvsp[-1].txt), 4);
         {strcpy(tempArr1, (yyvsp[-4].txt));strcpy(tempArr2, (yyvsp[-3].txt));strcpy(tempArr3, (yyvsp[-2].txt));}
     }
-#line 2396 "y.tab.c"
+#line 2414 "y.tab.c"
     break;
 
   case 89:
-#line 565 "program_test.y"
+#line 583 "program_test.y"
                  {
         strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));
      }
-#line 2404 "y.tab.c"
-    break;
-
-  case 90:
-#line 568 "program_test.y"
-                 {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
-#line 2410 "y.tab.c"
-    break;
-
-  case 91:
-#line 569 "program_test.y"
-               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
-#line 2416 "y.tab.c"
-    break;
-
-  case 92:
-#line 570 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2422 "y.tab.c"
     break;
 
-  case 93:
-#line 571 "program_test.y"
-               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 90:
+#line 586 "program_test.y"
+                 {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2428 "y.tab.c"
     break;
 
-  case 94:
-#line 572 "program_test.y"
+  case 91:
+#line 587 "program_test.y"
                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2434 "y.tab.c"
     break;
 
-  case 95:
-#line 573 "program_test.y"
-              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 92:
+#line 588 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2440 "y.tab.c"
     break;
 
-  case 96:
-#line 574 "program_test.y"
-              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 93:
+#line 589 "program_test.y"
+               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2446 "y.tab.c"
     break;
 
-  case 97:
-#line 575 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
+  case 94:
+#line 590 "program_test.y"
+               {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2452 "y.tab.c"
     break;
 
-  case 98:
-#line 576 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
+  case 95:
+#line 591 "program_test.y"
+              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2458 "y.tab.c"
     break;
 
-  case 99:
-#line 577 "program_test.y"
-            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
+  case 96:
+#line 592 "program_test.y"
+              {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2464 "y.tab.c"
     break;
 
-  case 100:
-#line 578 "program_test.y"
+  case 97:
+#line 593 "program_test.y"
             {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
 #line 2470 "y.tab.c"
     break;
 
-  case 101:
-#line 579 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 98:
+#line 594 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
 #line 2476 "y.tab.c"
     break;
 
-  case 102:
-#line 580 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 99:
+#line 595 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
 #line 2482 "y.tab.c"
     break;
 
-  case 103:
-#line 581 "program_test.y"
-                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 100:
+#line 596 "program_test.y"
+            {strcpy(tempArr1, (yyvsp[-1].txt));strcpy(tempArr2, (yyvsp[0].txt));strcpy(tempArr3, "--");}
 #line 2488 "y.tab.c"
     break;
 
-  case 104:
-#line 582 "program_test.y"
-                   {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+  case 101:
+#line 597 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
 #line 2494 "y.tab.c"
     break;
 
+  case 102:
+#line 598 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+#line 2500 "y.tab.c"
+    break;
+
+  case 103:
+#line 599 "program_test.y"
+                {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+#line 2506 "y.tab.c"
+    break;
+
+  case 104:
+#line 600 "program_test.y"
+                   {strcpy(tempArr1, (yyvsp[-2].txt));strcpy(tempArr2, (yyvsp[-1].txt));strcpy(tempArr3, (yyvsp[0].txt));}
+#line 2512 "y.tab.c"
+    break;
+
   case 105:
-#line 584 "program_test.y"
+#line 602 "program_test.y"
     {
         insert((yyvsp[-3].txt), (yyvsp[-2].txt), (yyvsp[0].txt), 4);
         strcpy(tempArr1, (yyvsp[-3].txt));strcpy(tempArr2, (yyvsp[-2].txt));strcpy(tempArr3, (yyvsp[-1].txt));
     }
-#line 2503 "y.tab.c"
+#line 2521 "y.tab.c"
     break;
 
   case 106:
-#line 595 "program_test.y"
+#line 613 "program_test.y"
     {
         CreateNode("look", "forOpen", 0);
         CreateNode("forExp", cat("LoopStatement",loopval), 2);
@@ -2513,19 +2531,19 @@ yyreduce:
         CreateNode("forExp", "for", 0);
         loopFlag = false;
     }
-#line 2517 "y.tab.c"
+#line 2535 "y.tab.c"
     break;
 
   case 107:
-#line 607 "program_test.y"
+#line 625 "program_test.y"
         {loopFlag = true; 
         ++loopval;
      }
-#line 2525 "y.tab.c"
+#line 2543 "y.tab.c"
     break;
 
   case 108:
-#line 614 "program_test.y"
+#line 632 "program_test.y"
     {
         insert((yyvsp[-5].txt), (yyvsp[-4].txt), (yyvsp[-2].txt), 4);
         CreateNode("for1", "for1", 6);
@@ -2535,11 +2553,11 @@ yyreduce:
         CreateNode("for1", (yyvsp[-4].txt), 0);
         CreateNode("for1", (yyvsp[-5].txt), 0);       
     }
-#line 2539 "y.tab.c"
+#line 2557 "y.tab.c"
     break;
 
   case 109:
-#line 624 "program_test.y"
+#line 642 "program_test.y"
     {
          insert((yyvsp[-3].txt), (yyvsp[-2].txt), (yyvsp[0].txt), 4);
         CreateNode("for1", (yyvsp[0].txt), 0);
@@ -2547,11 +2565,11 @@ yyreduce:
         CreateNode("for1", (yyvsp[-2].txt), 0);
         CreateNode("for1", (yyvsp[-3].txt),0);
     }
-#line 2551 "y.tab.c"
+#line 2569 "y.tab.c"
     break;
 
   case 110:
-#line 632 "program_test.y"
+#line 650 "program_test.y"
     {
         if(checkTableToAccess((yyvsp[-4].txt))){}
         else
@@ -2562,11 +2580,11 @@ yyreduce:
         CreateNode("for1", "=", 0);
         CreateNode("for1", (yyvsp[-4].txt), 0);
     }
-#line 2566 "y.tab.c"
+#line 2584 "y.tab.c"
     break;
 
   case 111:
-#line 643 "program_test.y"
+#line 661 "program_test.y"
     {
         if(checkTableToAccess((yyvsp[-2].txt))){}
         else
@@ -2576,31 +2594,31 @@ yyreduce:
         CreateNode("for1", "=", 0);
         CreateNode("for1", (yyvsp[-2].txt), 0);
     }
-#line 2580 "y.tab.c"
+#line 2598 "y.tab.c"
     break;
 
   case 113:
-#line 657 "program_test.y"
+#line 675 "program_test.y"
            {
         CreateNode("for2", tempArr3, 0);
         CreateNode("for2", tempArr2, 0);
         CreateNode("for2", tempArr1, 0);
     }
-#line 2590 "y.tab.c"
+#line 2608 "y.tab.c"
     break;
 
   case 115:
-#line 666 "program_test.y"
+#line 684 "program_test.y"
     {
         CreateNode("for3", tempArr3, 0);
         CreateNode("for3", tempArr2, 0);
         CreateNode("for3", tempArr1, 0);
     }
-#line 2600 "y.tab.c"
+#line 2618 "y.tab.c"
     break;
 
   case 117:
-#line 676 "program_test.y"
+#line 694 "program_test.y"
                                                  {
         CreateNode("whileExp", cat("wLoopStatement", loopval), 2);
         CreateNode("whileExp", tempArr3, 0);
@@ -2609,17 +2627,17 @@ yyreduce:
         printf("%s\n", tempArr1);
         CreateNode("whileExp", "while", 0);
     }
-#line 2613 "y.tab.c"
+#line 2631 "y.tab.c"
     break;
 
   case 118:
-#line 687 "program_test.y"
+#line 705 "program_test.y"
           {loopval++;}
-#line 2619 "y.tab.c"
+#line 2637 "y.tab.c"
     break;
 
   case 119:
-#line 691 "program_test.y"
+#line 709 "program_test.y"
                                                 {
         CreateNode("ifElse", "ifLoopStatement", 2);
         CreateNode("ifElse", tempArr3, 0);
@@ -2627,11 +2645,11 @@ yyreduce:
         CreateNode("ifElse", tempArr1, 0);
         CreateNode("ifElse", "if",0 );
     }
-#line 2631 "y.tab.c"
+#line 2649 "y.tab.c"
     break;
 
   case 120:
-#line 698 "program_test.y"
+#line 716 "program_test.y"
                                                            {
         CreateNode("ifElse", "ifElse", 7);
         CreateNode("ifElse", "else", 0);
@@ -2641,25 +2659,25 @@ yyreduce:
         CreateNode("ifElse", tempArr1, 0);
         CreateNode("ifElse", "if",0 );
     }
-#line 2645 "y.tab.c"
+#line 2663 "y.tab.c"
     break;
 
   case 121:
-#line 707 "program_test.y"
+#line 725 "program_test.y"
                           {
         CreateNode("ifElse", "ifLoopStatement", 2);
     }
-#line 2653 "y.tab.c"
+#line 2671 "y.tab.c"
     break;
 
   case 122:
-#line 712 "program_test.y"
+#line 730 "program_test.y"
        {loopval++;}
-#line 2659 "y.tab.c"
+#line 2677 "y.tab.c"
     break;
 
 
-#line 2663 "y.tab.c"
+#line 2681 "y.tab.c"
 
       default: break;
     }
@@ -2891,7 +2909,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 714 "program_test.y"
+#line 732 "program_test.y"
 
 
 

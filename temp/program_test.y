@@ -26,6 +26,8 @@ program : header  nextPart{
              
              displayTable();
              
+            // AssignLinkHeader();
+             
              CreateTree();
              
              Inorder(treeLink[tl-1],0);
@@ -141,8 +143,16 @@ assignList
 	    
         //
         
-        CreateExprNode(strtok(exprToken,"!"), $3);
-        CreateNode("AssignList",$3,exprCount);
+         AssignExprLinkHandle(explPrev);
+         
+        node *TTT = CreateNode("AssignList", "expr", 1);
+        //printf("entered\n");
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev;
+        //CreateExprNode(strtok(exprToken,"!"), $3);
+        //CreateNode("AssignList",$3,exprCount);
         CreateNode("AssignList", "=", 0);
         CreateNode("AssignList",$1,0);
 	}
@@ -252,9 +262,17 @@ assignListLoop
 	    }
 	    
         //
+        AssignExprLinkHandle(explPrev);
         
-        CreateExprNode(strtok(exprToken,"!"), $3);
-        CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
+        node *TTT = CreateNode(cat1("AssignListLoop", loopval), "expr", 1);
+        
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev-1;
+        
+        //CreateExprNode(strtok(exprToken,"!"), $3);
+        //CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
         CreateNode(cat1("AssignListLoop", loopval), "=", 0);
         CreateNode(cat1("AssignListLoop", loopval),$1,0);
 	}
@@ -321,28 +339,28 @@ lhs
 exp 
     :exp ADD exp1 {
          $$ = operate($1, $3, 1);
-         //generateCode(interNo, $1, $2, $3);
-       
+         CreateExprNodeHandle("+");
     }
     |exp SUB exp1 {
+        CreateExprNodeHandle("-");
        $$ = operate($1, $3, 2);
-      // generateCode(interNo, $1, $2, $3);
     }
     |exp1  {
         strcpy($$, $1);
-       // generateCode(interNo, $1, $2, $3);
     }
     ;
     
 exp1
     :exp1 MUL exp2 {
+        CreateExprNodeHandle("*");
        $$ = operate($1, $3, 3);  
     }
     |exp1 DIV exp2 {
+        CreateExprNodeHandle("/");
        $$ = operate($1, $3, 4);
     }
     |lhs {
-       
+       CreateExprNodeHandle($1);
         strcpy($$,$1);
     }
     
@@ -354,7 +372,7 @@ exp1
     
 exp2
     :lhs {
-       
+       CreateExprNodeHandle($1);
         strcpy($$, $1);
         
     }
