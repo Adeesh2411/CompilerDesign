@@ -78,11 +78,13 @@
 	FILE* yyin;
 	FILE *tempFile;
 	FILE *treeFile;
+	FILE *IcodeFile;
 	char tempArr[100];
 	char tempArr1[100];
 	char tempArr2[100];
 	char tempArr3[100];
 	char tempArr4[100];
+	char vArr[30];
 	
 	//for tree
     int expCount = 0;
@@ -123,6 +125,7 @@
 	char* exprPtr[100];
 	int exprPtrCt=0;
 	char parExp[10] = "parExp";
+	int pck=0;
 	
 	//function declarations used
 	void displayTable();  //for displaying symbol table..

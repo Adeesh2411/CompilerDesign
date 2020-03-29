@@ -231,7 +231,7 @@ char *correct(char *val, char *type){
 
 void displayTree(){
     
-    
+    for(int i=0;i<expL;i++) printf("%s\n",exprLink[i]->name);
 
     for(int i=tl-2; i>=0; i--){
         fprintf(treeFile, "%s,%s\n", treeLink[i]->parent, treeLink[i]->name);

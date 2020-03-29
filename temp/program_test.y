@@ -98,15 +98,23 @@ declaration
                 for(int i=0;i<ck;i++){
                     if(checkType($1, Tarr[i].value)){
                         insert($1,Tarr[i].name, Tarr[i].value, 1);
+                        
+                
+                        CreateNode("declaration", "AssignList", 3);
+                        CreateNode("declaration", $1, 0);
                     }
                 }
                 if(checkType($1, T.value)){
                     insert($1, T.name, T.value, 1);
-                    ck=0;comaflag=0;
+                    pck = ck;ck=0;comaflag=0;
+                    CreateNode("declaration", "AssignList", 3);
+                    CreateNode("declaration", $1, 0);
                 }
                 else if(checkTableToAccess(T.value)){
                     insert($1,T.name,getValue(T.value), 1);
-                    ck=0;comaflag=0;
+                    pck=ck;ck=0;comaflag=0;
+                    CreateNode("declaration", "AssignList", 3);
+                    CreateNode("declaration", $1, 0);
                 }          
             }       
            
@@ -163,11 +171,14 @@ assignList
 	    Tarr[ck-1].dflag = 1;
 	    
 	}
-	|variable ASSIGN exp COMMA assignList{
+	|variable ASSIGN exp COMMA dummyExpr assignList{
 	    comaflag = 1;
 	    strcpy(Tarr[ck++].name,$1);
 	    strcpy(Tarr[ck-1].value, $3);
 	    Tarr[ck-1].dflag = 1;
+	   // printf("verify = %s\n",$1);
+
+    
 	}
 	
 	| variable {
@@ -185,7 +196,21 @@ assignList
 	
 
 //
-
+dummyExpr
+    :{
+                 AssignExprLinkHandle(explPrev);
+         
+        node *TTT = CreateNode("AssignList", "expr", 1);
+        //printf("entered\n");
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev;
+	    
+        CreateNode("AssignList", "=", 0);
+        CreateNode("AssignList",vArr,0);	
+    }
+    ;
     
 declarationLoop 
     :type assignListLoop SEMICOLON{
@@ -316,7 +341,8 @@ type
     ;
 variable   
     :IDE{
-        
+    
+        strcpy(vArr, $1);
     }
     ;
     
@@ -448,9 +474,11 @@ stateTemp
 statements
     :declaration stateTemp
     {
+        for(int i=0;i<=pck;i++){
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "declaration", 2);
-        
+        }
+        pck=0;
     }
     |forExp stateTemp
     {
@@ -737,8 +765,9 @@ int main()
 {  
     yyin = fopen("program.c", "r");
     yyout = fopen("out.txt","w"); //for SymbolTable
-    tempFile = fopen("token.txt","w");
-    treeFile = fopen("tree.txt","w");
+    tempFile = fopen("token.txt","w"); // all the tokens available here
+    treeFile = fopen("tree.txt","w"); // used by tree.py for creating tree
+    IcodeFile = fopen("Icode.txt","w"); // intermediate code can be found
     
 	yyparse(); 
 
