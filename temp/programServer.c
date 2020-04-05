@@ -231,15 +231,16 @@ char *correct(char *val, char *type){
 
 void displayTree(){
     
-    for(int i=0;i<expL;i++) printf("%s\n",exprLink[i]->name);
+  //  for(int i=0;i<expL;i++) printf("%s\n",exprLink[i]->name);
 
     for(int i=tl-2; i>=0; i--){
         fprintf(treeFile, "%s,%s\n", treeLink[i]->parent, treeLink[i]->name);
     }
     for(int i=exprNoTemp-1;i>=0;i--){
-        //printf("%d\n",exprNo[i]);
         AssignParentLink(exprLink[ exprNo[i]-1 ]);
-    }    
+    }
+    addLevelNoExpr();
+        
     for(int i=expL-1;i>=0; i--) fprintf(treeFile, "%s,%s\n", exprLink[i]->parent, exprLink[i]->name);
 }
 
@@ -356,7 +357,7 @@ void Inorder(node *Start, int level){
             strcpy(Start->name , cat(Start->name, level));
          }
         strcpy(Start->parent , cat(Start->parent, level-1));
-        printf("%s \t",Start->name);
+       // printf("%s \t",Start->name);
     }
 }
 
@@ -397,6 +398,29 @@ void addLevelNo(){
     }
 }
 
+
+void addLevelNoExpr(){
+    char Atemp[30];
+    int tempNo=1;
+    for(int i=0; i<expL; ++i){
+        strcpy(Atemp, treeLink[i]->name);
+        
+        int k=i-1;
+        while(k>=0){
+            if(!strcmp(Atemp, exprLink[k]->name)){
+                strcpy(exprLink[i]->name, cat(exprLink[i]->name, tempNo));
+                tempNo++;
+                //printf("%s\n",treeLink[i]->name);
+                break;
+            
+            }
+            
+            --k;
+        }
+    }
+}
+
+
 char *cat1(char *s, int w){
     char tt[30];
     sprintf(tt, " (%d)",w );
@@ -405,6 +429,35 @@ char *cat1(char *s, int w){
     return tempArr4;
 }
   
+
+char *cat5(char *s, int w){
+    memset(tempArr4,'\0',sizeof(tempArr4));
+    char tt[30];
+    sprintf(tt, "%d",w );
+    strcpy(tempArr4,  s);
+    strcat(tempArr4, tt);
+    return tempArr4;
+}
+
+
+char *cat6(char *s, int w){
+    memset(tempArr5,'\0',sizeof(tempArr4));
+    char tt[30];
+    sprintf(tt, "%d",w );
+    strcpy(tempArr5,  s);
+    strcat(tempArr5, tt);
+    return tempArr5;
+}
+
+char *cat7(char *s, int w){
+    memset(tempArr6,'\0',sizeof(tempArr4));
+    char tt[30];
+    sprintf(tt, "%d",w );
+    strcpy(tempArr6,  s);
+    strcat(tempArr6, tt);
+    return tempArr6;
+}
+
 
 bool isOp(char *temp){
     if(!strcmp(temp, "+") || !strcmp(temp, "-") || !strcmp(temp, "*") || !strcmp(temp, "/")) return true;
@@ -415,29 +468,54 @@ void CreateExprNodeHandle(char *exp){
     node *new = (node*)malloc(sizeof(node));
     strcpy(new ->parent, " -- ");
     strcpy(new->name, exp);
-    
-    new->nLink =  2;
+    new->nLink=0;
+    if(isOp(exp))
+        new->nLink =  2;
     exprLink[expL++] = new;
     new->temp =0;
 }
 
-void AssignExprLinkHandle(int start){
+void AssignExprLinkHandle(int start, char *var){
     bool visit[expL];
+    bool check = true;
     memset(visit, false, sizeof(visit));
     for(int i=start;i<expL; ++i){
+        
         if(isOp(exprLink[i]->name)){
             int localK = i-1;
             int nLinkExpr = 0;
+            check=false;
             while(localK >=0){
                  if(nLinkExpr == 2) 
                     break;
                  if(!visit[localK]){
                     exprLink[i]->childArrLink[nLinkExpr++] = exprLink[localK];
                     visit[localK] = true;
+                    if(nLinkExpr == 1){
+                        if(isOp(exprLink[localK]->name))
+                            fprintf(IcodeFile, "%s = %s %s",cat1("t",i), cat("t", localK), exprLink[i]->name);
+                        else
+                            fprintf(IcodeFile, "%s = %s %s",cat1("t",i), exprLink[localK]->name, exprLink[i]->name);
+                    }
+                    else{
+                        if(isOp(exprLink[localK]->name)){
+                            fprintf(IcodeFile, " %s\n",cat("t",localK));
+                        }
+                        else{
+                            fprintf(IcodeFile, " %s\n", exprLink[localK]->name);
+                        }
+                    
+                    }                
                  }
                 --localK;
-            }           
-        }         
+            }
+                       
+        }
+    //    fprintf(IcodeFile, "\n");         
     }
+    if(!check)
+        fprintf(IcodeFile, "%s = %s\n\n",var, cat1("t",expL-1));
+    else
+        fprintf(IcodeFile, "%s = %s\n\n",var, exprLink[expL-1]->name);
     
 }

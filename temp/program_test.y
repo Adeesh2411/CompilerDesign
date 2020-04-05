@@ -151,7 +151,7 @@ assignList
 	    
         //
         
-         AssignExprLinkHandle(explPrev);
+         AssignExprLinkHandle(explPrev, $1);
          
         node *TTT = CreateNode("AssignList", "expr", 1);
         //printf("entered\n");
@@ -198,7 +198,7 @@ assignList
 //
 dummyExpr
     :{
-                 AssignExprLinkHandle(explPrev);
+                 AssignExprLinkHandle(explPrev,"--"); //TODO
          
         node *TTT = CreateNode("AssignList", "expr", 1);
         //printf("entered\n");
@@ -287,7 +287,7 @@ assignListLoop
 	    }
 	    
         //
-        AssignExprLinkHandle(explPrev);
+        AssignExprLinkHandle(explPrev, $1);
         
         node *TTT = CreateNode(cat1("AssignListLoop", loopval), "expr", 1);
         
@@ -552,7 +552,7 @@ wloopStatement
 ifloopStatement
     :declarationLoop ifloopStatement{
         CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
-        CreateNode(cat("ifLoopStatement",loopval), "declarationLoop", 2);
+        CreateNode(cat("ifLoopStatement",loopval), cat1("declarationLoop",loopval), 2);
     }
     |forExp ifloopStatement
     {
@@ -574,18 +574,18 @@ ifloopStatement
     
 condExp
     :exp AND exp {
-       strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+       strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
      }
-    |exp LAND exp{ strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    |exp LAND exp{ strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
     }
-    |exp OR exp{strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3); 
+    |exp OR exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3); 
     }
     |exp LOR exp
-    {strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    {strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
     }
     |exp LE exp
     {
-    strcpy(tempArr, $1);strcpy(tempArr, $2);strcpy(tempArr, $3);
+    strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);
     }
     |exp GE exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
     |exp L exp{strcpy(tempArr1, $1);strcpy(tempArr2, $2);strcpy(tempArr3, $3);}
@@ -646,14 +646,20 @@ forExp
         CreateNode("forExp", "for1", 6);
         CreateNode("forExp", "for", 0);
         loopFlag = false;
+        fprintf(IcodeFile, "T_ = %s %c %s\n",varFor, tempArr3[0], tempArr1);
+        fprintf(IcodeFile, "%s = T_\n", varFor);     
+        fprintf(IcodeFile, "goto %s\n%s : ",cat5("L",labelTemp-3), cat6("L",labelTemp-1));  
     }
     ;
 
 ForName
     :FOR{loopFlag = true; 
         ++loopval;
+        
      }
     ;
+
+
 
 for1
     :type variable ASSIGN lhs COMMA for1
@@ -664,7 +670,8 @@ for1
         CreateNode("for1", $4, 0);
         CreateNode("for1", "=", 0);
         CreateNode("for1", $2, 0);
-        CreateNode("for1", $1, 0);       
+        CreateNode("for1", $1, 0);
+        fprintf(IcodeFile, "%s : %s = %s\n",cat5("L",labelTemp++), $2, $4);       
     }
     | type variable ASSIGN lhs
     {
@@ -673,6 +680,8 @@ for1
         CreateNode("for1", "=", 0);
         CreateNode("for1", $2, 0);
         CreateNode("for1", $1,0);
+        fprintf(IcodeFile, "%s : %s = %s\n",cat5("L",labelTemp++), $2, $4); 
+        strcpy(varFor, $2);
     }
     |variable ASSIGN lhs COMMA for1
     {
@@ -704,6 +713,7 @@ for2
         CreateNode("for2", tempArr3, 0);
         CreateNode("for2", tempArr2, 0);
         CreateNode("for2", tempArr1, 0);
+        fprintf(IcodeFile, "%s : if (%s %s %s) goto %s\ngoto %s\n%s : ",cat5("L",labelTemp), tempArr1, tempArr2, tempArr3,cat6("L",labelTemp+1), cat7("L",labelTemp+2), cat6("L",labelTemp-1)); labelTemp +=3;
     }
     |
     ;
@@ -719,23 +729,34 @@ for3
     
 //while loop .. 
 whileExp
-    :whileName OP condExp CP OB wloopStatement CB{
+    :whileName OP condExp CP dummyLabel OB wloopStatement CB{
         CreateNode("whileExp", cat("wLoopStatement", loopval), 2);
         CreateNode("whileExp", tempArr3, 0);
         CreateNode("whileExp", tempArr2, 0);
         CreateNode("whileExp", tempArr1, 0);
         printf("%s\n", tempArr1);
         CreateNode("whileExp", "while", 0);
+        fprintf(IcodeFile, "goto %s\n%s:\n",cat5("L",labelTemp-3), cat6("L", labelTemp-2) );
     }
     ;
 
 whileName
-    :WHILE{loopval++;}
+    :WHILE{loopval++;
+        fprintf(IcodeFile, "%s : if",cat5("L",labelTemp++));
+    }
     ;
+
+dummyLabel
+    :{
+        char array[100];
+        strcpy(array, tempArr1);strcat(array, tempArr2);strcat(array, tempArr3);
+        fprintf(IcodeFile, "(%s) goto %s\ngoto %s\n%s : ",array,cat5("L",labelTemp++), cat6("L", ++labelTemp-1), cat5("L",labelTemp-2));
+    }
+
 
 ifElse
     :ifName OP condExp CP OB ifloopStatement CB {
-        CreateNode("ifElse", "ifLoopStatement", 2);
+        CreateNode("ifElse", cat("ifLoopStatement",loopval), 2);
         CreateNode("ifElse", tempArr3, 0);
         CreateNode("ifElse", tempArr2, 0);
         CreateNode("ifElse", tempArr1, 0);
@@ -744,14 +765,14 @@ ifElse
     |ifName OP condExp CP OB ifloopStatement CB ELSE ifElse{
         CreateNode("ifElse", "ifElse", 7);
         CreateNode("ifElse", "else", 0);
-        CreateNode("ifElse", "ifLoopStatement", 2);
+        CreateNode("ifElse", cat("ifLoopStatement",loopval), 2);
         CreateNode("ifElse", tempArr3, 0);
         CreateNode("ifElse", tempArr2, 0);
         CreateNode("ifElse", tempArr1, 0);
         CreateNode("ifElse", "if",0 );
     }
     |OB ifloopStatement CB{
-        CreateNode("ifElse", "ifLoopStatement", 2);
+        CreateNode("ifElse", cat("ifLoopStatement",loopval), 2);
     }
     ;
 ifName
@@ -763,7 +784,7 @@ ifName
 
 int main() 
 {  
-    yyin = fopen("program.c", "r");
+    yyin = fopen("program.c", "r"); // input file for program
     yyout = fopen("out.txt","w"); //for SymbolTable
     tempFile = fopen("token.txt","w"); // all the tokens available here
     treeFile = fopen("tree.txt","w"); // used by tree.py for creating tree

@@ -79,11 +79,13 @@
 	FILE *tempFile;
 	FILE *treeFile;
 	FILE *IcodeFile;
-	char tempArr[100];
-	char tempArr1[100];
-	char tempArr2[100];
-	char tempArr3[100];
-	char tempArr4[100];
+	char tempArr[1000];
+	char tempArr1[1000];
+	char tempArr2[1000];
+	char tempArr3[1000];
+	char tempArr4[1000];
+	char tempArr5[1000];
+	char tempArr6[1000];
 	char vArr[30];
 	
 	//for tree
@@ -126,6 +128,9 @@
 	int exprPtrCt=0;
 	char parExp[10] = "parExp";
 	int pck=0;
+	int labelTemp=0;
+	char varFor[20];
+	
 	
 	//function declarations used
 	void displayTable();  //for displaying symbol table..
@@ -147,6 +152,9 @@
 	void Inorder(node *, int level); // inorder traversal of tree
 	char *cat(char*, int); // concat two strings
 	char *cat1(char*, int); // concat two strings
+	char* cat5(char*, int);//
+	char* cat6(char*, int);//
+	char* cat6(char*, int);//
 	void AssignLink(int pNo); //
 	void CreateExprNode(char*, char*);// 
 	void AssignLinkRev(int);//Assign link to the
@@ -154,3 +162,4 @@
 	void addLevelNo();// for avoiding same name node
     void CreateExprNodeHandle(char *);// for expression handling.
 	void AssignParentLink(node *cur);//
+	void addLevelNoExpr();//

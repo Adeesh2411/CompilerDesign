@@ -1,0 +1,27 @@
+t (3) = 2 * 10
+t (4) = t (3) + 1
+global = t (4)
+
+t (7) = 1 + 10
+t (9) = 1 + t (7)
+t (11) = 4 + t (9)
+mn = t (11)
+
+g = 100
+
+L0 : i = 0
+L1 : if (0 < 10) goto L2
+goto L3
+L2 : h = 10
+
+T_ = i - 0
+i = T_
+goto L1
+L3 : missle = 10
+
+L4 : if(1<2) goto L6
+goto L5
+L6 : whl = 100
+
+goto L4
+L5:

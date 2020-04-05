@@ -1,4 +1,8 @@
 line no	type	name	value	bscope	scope	Gscope
 4,int,global,21,0,0,1
-9,int,eh,10,0,2,0
-11,int::func,main,--,1,0,1
+11,int,g,100,0,2,0
+14,int,i,0,0,1,-1
+15,int,h,10,0,2,0
+18,float,missle,10.000000,0,1,0
+21,int,whl,100,0,2,0
+24,int::func,main,--,1,0,1
