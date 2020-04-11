@@ -21,11 +21,9 @@ int yyclearin(char *s){
 }
 
 int yyerror(char *s){
-    //yyless(3);
     semiFlag = 1;
     printf("%c[3m error in line No %d\n%c[0m",27,lineNo,27);
     printf("%c[4mLine = > %s\n%c[0m",27,curToken,27);
-    //printf("%d. %s %s\n",lineNo, s, curToken);
 }
 
 void insert(char *type, char* name, char *value,int flag ){
@@ -475,10 +473,24 @@ void CreateExprNodeHandle(char *exp){
     new->temp =0;
 }
 
+
+bool isNumeric(char *name){
+    for(int i=0;i<strlen(name); i++){
+        if(!(name[i]>=48) || !(name[i]<=57)){
+            return false;
+        }
+    }
+    return true;
+}
+
 void AssignExprLinkHandle(int start, char *var){
     bool visit[expL];
     bool check = true;
     memset(visit, false, sizeof(visit));
+    char one[200];
+    char two[200];
+    char three[200];
+    char four[200];
     for(int i=start;i<expL; ++i){
         
         if(isOp(exprLink[i]->name)){
@@ -492,18 +504,47 @@ void AssignExprLinkHandle(int start, char *var){
                     exprLink[i]->childArrLink[nLinkExpr++] = exprLink[localK];
                     visit[localK] = true;
                     if(nLinkExpr == 1){
-                        if(isOp(exprLink[localK]->name))
-                            fprintf(IcodeFile, "%s = %s %s",cat1("t",i), cat("t", localK), exprLink[i]->name);
-                        else
-                            fprintf(IcodeFile, "%s = %s %s",cat1("t",i), exprLink[localK]->name, exprLink[i]->name);
+                        if(isOp(exprLink[localK]->name)){
+                                strcpy(one, cat1("t", i));
+                                strcpy(two, cat("t",localK));
+                                strcpy(three, exprLink[i]->name);
+                                
+                                fprintf(IcodeFile, "%d. %s = %s %s",lineNo, one, two, exprLink[i]->name);
+                            
+                            }
+                        else{
+                                strcpy(one, cat1("t", i));
+                                strcpy(two, exprLink[localK]->name);
+                                strcpy(three, exprLink[i]->name);
+                                fprintf(IcodeFile, "%d. %s = %s %s",lineNo, one, exprLink[localK]->name, exprLink[i]->name);
+                                
+                            }
                     }
                     else{
                         if(isOp(exprLink[localK]->name)){
-                            fprintf(IcodeFile, " %s\n",cat("t",localK));
+                            strcpy(four, cat("t", localK));
+                            fprintf(IcodeFile, " %s\n",four);
                         }
                         else{
+                            strcpy(four, exprLink[localK]->name);
                             fprintf(IcodeFile, " %s\n", exprLink[localK]->name);
                         }
+                        int access;
+                        if(!strcmp(three, "+")) access = 1;
+                        else if(!strcmp(three, "-")) access = 2;
+                        else if(!strcmp(three, "*")) access = 3;
+                        else access = 4;
+                         
+                        if(isNumeric(two) && isNumeric(four)) {
+                            insert("TEMP", one, operate(two,four, access), 1);
+                        }
+                        else if(isNumeric(two) && !isNumeric(four)){
+                            insert("TEMP", one, operate(two, getValue(four), access), 1);
+                        }
+                        else {
+                            insert("TEMP", one, operate(getValue(two), four, access), 1);
+                        }
+                        
                     
                     }                
                  }
@@ -511,11 +552,94 @@ void AssignExprLinkHandle(int start, char *var){
             }
                        
         }
-    //    fprintf(IcodeFile, "\n");         
+             
     }
     if(!check)
-        fprintf(IcodeFile, "%s = %s\n\n",var, cat1("t",expL-1));
+        fprintf(IcodeFile, "%d. %s = %s\n\n",lineNo, var, cat1("t",expL-1));
     else
-        fprintf(IcodeFile, "%s = %s\n\n",var, exprLink[expL-1]->name);
+        fprintf(IcodeFile, "%d. %s = %s\n\n",lineNo, var, exprLink[expL-1]->name);
     
+}
+
+
+int checkinOptim(char *s){
+    for(int i=0;i<optH;++i){
+        if(!strcmp(optim[i].name, s)){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void insertOptim(char *s){
+    int temp =checkinOptim(s);
+    if(temp==-1){
+        strcpy(optim[optH++].name, s);
+        optim[optH-1].lineNo = lineNo;
+        optim[optH-1].reDec = false;
+    }
+    else{
+        if(!optim[temp].reDec){
+            remove1[remH++] = optim[temp].lineNo;
+            optim[temp].lineNo=lineNo;
+            
+        }
+   }
+}
+
+
+void updateOpt(char *s, int val){
+    for(int i=0;i<optH;++i){
+        if(!strcmp(optim[i].name, s)){
+            optim[i].reDec = 1;
+        }        
+    }
+}
+
+void printAll(){
+    printf("remove =");
+    for(int i=0;i<remH;++i){
+        printf("%d ",remove1[i]);
+    }
+    printf("\noptim = \n");
+    for(int i=0;i<optH;i++){
+        printf("name = %s, lineNo = %d, reDec = %d\n", optim[i].name, optim[i].lineNo, optim[i].reDec);
+    }
+}
+
+
+int getNo(char *s){
+    char temp[4];
+    temp[0]=s[0];
+    temp[1]='\0';
+    if(s[1]==' '){
+        return atoi(temp);
+    }
+    else{
+        temp[2]=s[1];
+        temp[3]='\0';
+        return atoi(temp);
+    }
+}
+
+bool noInRemove(int n){
+    for(int i=0;i<remH;++i){
+        if(remove1[i] == n) return true;
+    }
+    return false;
+}
+void OptimiseCode(){
+    FILE *fp = fopen("optimisedIcode.txt","w");
+    fclose(IcodeFile);
+    FILE *rd = fopen("Icode.txt", "r");
+    char buffer[255];
+
+    
+    while(fgets(buffer, 255, rd)){
+        int no = getNo(buffer);
+        if(!noInRemove(no)){    
+            
+            fprintf(fp, "%s", buffer);
+        }
+    }    
 }

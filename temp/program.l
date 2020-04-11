@@ -54,6 +54,8 @@ End   \*\/
 "--"    {yylval.txt=strdup(yytext);generateToken("--","DEC",-1);return DEC;}
 "^"     {yylval.txt=strdup(yytext);generateToken("^","XOR",-1);return XOR;}
 
+("+++")("+")* { printf("%c[4m%s\n%c[0m",27,"Note :",27);   printf("\tError Recovery : Droped extra \'+\' in the expression in line no %d\n\n",lineNo); return INC;}
+("---")("-")* {printf("%c[4m%s\n%c[0m",27,"Note :",27);   printf("\tError Recovery : Droped extra \'-\' in the expression in line no %d\n\n",lineNo); return DEC;}
 
 "switch"    {yylval.txt=strdup(yytext);generateToken("switch","keyword",-1);return SWITCH;}
 "if"        {yylval.txt=strdup(yytext);generateToken("if","keyword",-1);return IF;}
@@ -111,7 +113,11 @@ End   \*\/
 [\n]   {lineNo++;}
 [ \t]     ;
 
-
+[0-9]+/(({alpha}|"_")({alpha}|{digit}|"_")*) {
+    printf("%c[4m%s\n%c[0m",27,"Note :",27); 
+    printf("\tError Recovery : droping the integer value in line No %d\n\n",lineNo);
+    
+}
 .           return yytext[0];
 
 %%

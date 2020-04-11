@@ -132,6 +132,21 @@
 	char varFor[20];
 	
 	
+	//optimistaionPart
+	// multple declarations are checked
+	//
+	struct optim{
+	    char name[20];
+	    int lineNo;
+	    bool reDec;
+	    bool Const;
+	}optim[100];
+	
+	int remove1[100];//contains lineNo for removing 
+	int remH=0;//hander for remove
+	int optH=0;
+	
+	
 	//function declarations used
 	void displayTable();  //for displaying symbol table..
 	void insert(char *type, char* name, char *value,int flag ); //for inserting into the symbol table
@@ -145,7 +160,6 @@
 	char *correct(char *val, char *type); //to correct the number of perticular type
 	void displayTree(); // for printing AST
 	char* intToStr(char* s, int n); //for AST same name
-	//void insertNode(char *, char*, char *,char*,char*,bool); //for inserting node to a tree
 	node* CreateNode(char *, char*, int);    //Creating the node of given name, parent name
 	node *getParent(char *name, int index); //getNode of given name
 	void CreateTree();  //for Creating tree using the linkArr
@@ -163,3 +177,8 @@
     void CreateExprNodeHandle(char *);// for expression handling.
 	void AssignParentLink(node *cur);//
 	void addLevelNoExpr();//
+	void OptimiseCode();//
+	void insertOptim();//
+	void updateOpt(char *, int);//
+	bool isNumeric(char *);//
+	void printAll();//

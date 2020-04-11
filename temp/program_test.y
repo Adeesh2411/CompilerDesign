@@ -25,16 +25,13 @@ program : header  nextPart{
             CreateNode("--", "Start", 2);
              
              displayTable();
-             
-            // AssignLinkHeader();
-             
              CreateTree();
-             
              Inorder(treeLink[tl-1],0);
-             
              addLevelNo();
-             printf("\n\n");
-             displayTree();             
+             displayTree();
+
+             OptimiseCode();
+           
          };
 
 header : HEADER 
@@ -127,6 +124,25 @@ declaration
         }
         else{
             insert("", $1, $3, 2); // flag 2 for updating variable.
+            
+                     AssignExprLinkHandle(explPrev, $1);
+         
+        node *TTT = CreateNode("AssignList", "expr", 1);
+        //printf("entered\n");
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev;
+        
+        CreateNode("AssignList", "=", 0);
+        CreateNode("AssignList",$1,0);
+        
+         CreateNode("declaration", "AssignList", 3);
+        CreateNode("declaration", "int", 0);    
+            
+        
+        
+        insertOptim($1);
         }
     } 
     
@@ -159,10 +175,11 @@ assignList
         strcpy(TTT->childArrLink[0]->parent, "expr");
         explPrev = expL;
         exprNo[exprNoTemp++] = explPrev;
-        //CreateExprNode(strtok(exprToken,"!"), $3);
-        //CreateNode("AssignList",$3,exprCount);
+       
         CreateNode("AssignList", "=", 0);
         CreateNode("AssignList",$1,0);
+        
+        insertOptim($1);
 	}
 	| variable COMMA assignList
 	{
@@ -176,8 +193,7 @@ assignList
 	    strcpy(Tarr[ck++].name,$1);
 	    strcpy(Tarr[ck-1].value, $3);
 	    Tarr[ck-1].dflag = 1;
-	   // printf("verify = %s\n",$1);
-
+	  
     
 	}
 	
@@ -232,9 +248,6 @@ declarationLoop
                 else{
                     printf("undefined %s assigned in line No %d\nline => %s\n",T.value,lineNo,prevToken);
                 }
-                //
-                //strcpy(tempArr, "declarationLoop");
-               // printf("%s\n",cat("declarationLoop",loopval));
                 CreateNode(cat("declarationLoop",loopval), cat1("AssignListLoop", loopval), 3);
                 CreateNode(cat("declarationLoop",loopval), $1, 0);
                 
@@ -264,6 +277,23 @@ declarationLoop
         }
         else{
             insert("", $1, $3, 2); // flag 2 for updating variable.
+         AssignExprLinkHandle(explPrev, $1);
+        
+        node *TTT = CreateNode(cat1("AssignListLoop", loopval), "expr", 1);
+        
+        TTT->childArrLink[0] = exprLink[expL-1];
+        strcpy(TTT->childArrLink[0]->parent, "expr");
+        explPrev = expL;
+        exprNo[exprNoTemp++] = explPrev;
+        
+        //CreateExprNode(strtok(exprToken,"!"), $3);
+        //CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
+        CreateNode(cat1("AssignListLoop", loopval), "=", 0);
+        CreateNode(cat1("AssignListLoop", loopval),$1,0);
+        CreateNode(cat("declarationLoop",loopval), cat1("AssignListLoop", loopval), 3);
+        CreateNode(cat("declarationLoop",loopval), "int", 0);
+            
+            
         }
     } 
     
@@ -296,8 +326,6 @@ assignListLoop
         explPrev = expL;
         exprNo[exprNoTemp++] = explPrev;
         
-        //CreateExprNode(strtok(exprToken,"!"), $3);
-        //CreateNode(cat1("AssignListLoop", loopval),$3,exprCount);
         CreateNode(cat1("AssignListLoop", loopval), "=", 0);
         CreateNode(cat1("AssignListLoop", loopval),$1,0);
 	}
@@ -323,7 +351,10 @@ assignListLoop
 	    else{
 	        strcpy(Tarr[ck++].name ,$1);
 	        Tarr[ck-1].dflag = 4;
-	    }    
+	    }
+	     CreateNode(cat1("AssignListLoop", loopval), "expr", 1);
+	     CreateNode(cat1("AssignListLoop", loopval), "=", 0);
+        CreateNode(cat1("AssignListLoop", loopval),$1,0);    
 	    }
 	
 	;
@@ -338,6 +369,7 @@ type
     |CHAR { }
     |DOUBLE 
     |FLOAT 
+    |VOID
     ;
 variable   
     :IDE{
@@ -354,6 +386,7 @@ lhs
         }
         else{
             defineflag=1;
+            updateOpt($1, 1);
             strcpy($$, getValue($1));
         }
     } 
@@ -386,7 +419,8 @@ exp1
        $$ = operate($1, $3, 4);
     }
     |lhs {
-       CreateExprNodeHandle($1);
+        
+        CreateExprNodeHandle($1);
         strcpy($$,$1);
     }
     
@@ -504,7 +538,7 @@ loopStatement
         
         CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
         CreateNode(cat("LoopStatement",loopval), tempArr2, 2);
-        printf("%s\n",tempArr2);
+        //printf("%s\n",tempArr2);
     }
     |forExp loopStatement
     {
@@ -734,7 +768,7 @@ whileExp
         CreateNode("whileExp", tempArr3, 0);
         CreateNode("whileExp", tempArr2, 0);
         CreateNode("whileExp", tempArr1, 0);
-        printf("%s\n", tempArr1);
+        //printf("%s\n", tempArr1);
         CreateNode("whileExp", "while", 0);
         fprintf(IcodeFile, "goto %s\n%s:\n",cat5("L",labelTemp-3), cat6("L", labelTemp-2) );
     }
