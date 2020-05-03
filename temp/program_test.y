@@ -10,9 +10,9 @@
 %token<txt> CHAR INT FLOAT DOUBLE VOID RETURN
 %token<txt> EQ LE GE AND OR XOR ASSIGN L G NEQ
 %token<txt> IF ELSE SWITCH BREAK WHILE CASE DEFAULT FOR 
-%token<txt> ADD SUB MUL DIV INC DEC
+%token<txt> ADD SUB MUL DIV INC DEC PRINTF
 %token<txt> SEMICOLON COMMA 
-%token<txt> OP CP OB CB LOR LAND
+%token<txt> OP CP OB CB LOR LAND QUOTE
 %type<txt> exp exp1 lhs exp2 condExp condExp1
 %type<txt> type assignList variable funcVariable ForName
 %start program
@@ -57,13 +57,35 @@ nextPart
     {
         CreateNode("nextPart", "function", 4);
         CreateNode("nextPart", "nextPart", 2);
-
     }
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
+    |PRINTF OP PvarXp CP SEMICOLON nextPart
     |
     ;
 
-
+pexp
+    :variable pexp
+    |
+    ;
+PvarXp
+    :variable{
+        if(!checkTableToAccess($1))
+            printf("Error : %s is undefined\n",$1);
+    }
+    ;
     
+CommaVar
+    :variable COMMA CommaVar
+    {
+       if(!checkTableToAccess($1))
+            printf("Error : %s is undefined\n",$1);
+    }
+    |variable{
+       if(!checkTableToAccess($1))
+            printf("Error : %s is undefined\n",$1);
+    }
+    ;
 declaration 
     :type assignList SEMICOLON{
         
@@ -358,11 +380,6 @@ assignListLoop
 	    }
 	
 	;
-	
-//
-
-
-
 
 type
     :INT 
@@ -529,6 +546,9 @@ statements
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "ifElse", 7);
     }
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
+    |PRINTF OP PvarXp CP SEMICOLON nextPart
     ;
 
 loopStatement
@@ -555,6 +575,9 @@ loopStatement
         CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
         CreateNode(cat("LoopStatement",loopval), "ifElse", 7);
     }
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
+    |PRINTF OP PvarXp CP SEMICOLON nextPart
     |
     ;
     
@@ -579,6 +602,9 @@ wloopStatement
         CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
         CreateNode(cat("wLoopStatement",loopval), "ifElse", 7);
     }
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
+    |PRINTF OP PvarXp CP SEMICOLON nextPart
     |
     ;
     
@@ -603,6 +629,9 @@ ifloopStatement
         CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
         CreateNode(cat("ifLoopStatement",loopval), "ifElse", 7);
     }
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
+    |PRINTF OP PvarXp CP SEMICOLON nextPart    
     |
     ;    
     
@@ -680,8 +709,8 @@ forExp
         CreateNode("forExp", "for1", 6);
         CreateNode("forExp", "for", 0);
         loopFlag = false;
-        fprintf(IcodeFile, "T_ = %s %c %s\n",varFor, tempArr3[0], tempArr1);
-        fprintf(IcodeFile, "%s = T_\n", varFor);     
+        fprintf(IcodeFile, "%d. T_ = %s %c %s\n",lineNo, varFor, tempArr3[0], tempArr1);
+        fprintf(IcodeFile, "%d. %s = T_\n",lineNo, varFor);     
         fprintf(IcodeFile, "goto %s\n%s : ",cat5("L",labelTemp-3), cat6("L",labelTemp-1));  
     }
     ;
@@ -705,7 +734,7 @@ for1
         CreateNode("for1", "=", 0);
         CreateNode("for1", $2, 0);
         CreateNode("for1", $1, 0);
-        fprintf(IcodeFile, "%s : %s = %s\n",cat5("L",labelTemp++), $2, $4);       
+        fprintf(IcodeFile, "%s : %d. %s = %s\n",cat5("L",labelTemp++), lineNo, $2, $4);       
     }
     | type variable ASSIGN lhs
     {

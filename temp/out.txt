@@ -1,8 +1,11 @@
 line no	type	name	value	bscope	scope	Gscope
-4,TEMP,t (3),20.000000,0,0,1
-4,TEMP,t (4),21.000000,0,0,1
+4,TEMP,t_(3),20.000000,0,0,1
+4,TEMP,t_(4),21.000000,0,0,1
 4,int,global,21,0,0,1
-9,int,x,10,0,1,0
-10,int,i,0,0,1,0
-11,float,aa,100.000000,0,2,0
-14,int::func,main,--,1,0,1
+6,int,x,100,0,1,0
+7,TEMP,t_(8),20.000000,0,1,0
+7,int,y,20,0,1,0
+9,int,i,0,0,1,0
+10,int,x,10,0,2,0
+14,int,x,99,0,2,0
+18,int::func,main,--,1,0,1

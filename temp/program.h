@@ -16,6 +16,7 @@
     //used for maintaining scope level
     extern int Bscope;
     extern int scope;
+    extern int cntBracket;
     int Gscope = 0;
     
     extern char *Err;
@@ -53,7 +54,8 @@
 		int scope;
 		int Bscope;
 		int Gscope;
-	}arr[100];
+		int cntBracket;
+	}arr[500];
 	
 	
 	
@@ -157,6 +159,7 @@
 	char *getValue(char *rhs);  //to get the value of the variable
 	char* operate(char *s1, char* s2, int val); //function to evaluate arithmetic operation
 	void update(char *name, char* val); // to update the current value of name with value
+	char* GetType(char *name, char* val);
 	char *correct(char *val, char *type); //to correct the number of perticular type
 	void displayTree(); // for printing AST
 	char* intToStr(char* s, int n); //for AST same name

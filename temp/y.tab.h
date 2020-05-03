@@ -84,14 +84,16 @@ extern int yydebug;
     DIV = 290,
     INC = 291,
     DEC = 292,
-    SEMICOLON = 293,
-    COMMA = 294,
-    OP = 295,
-    CP = 296,
-    OB = 297,
-    CB = 298,
-    LOR = 299,
-    LAND = 300
+    PRINTF = 293,
+    SEMICOLON = 294,
+    COMMA = 295,
+    OP = 296,
+    CP = 297,
+    OB = 298,
+    CB = 299,
+    LOR = 300,
+    LAND = 301,
+    QUOTE = 302
   };
 #endif
 /* Tokens.  */
@@ -130,14 +132,16 @@ extern int yydebug;
 #define DIV 290
 #define INC 291
 #define DEC 292
-#define SEMICOLON 293
-#define COMMA 294
-#define OP 295
-#define CP 296
-#define OB 297
-#define CB 298
-#define LOR 299
-#define LAND 300
+#define PRINTF 293
+#define SEMICOLON 294
+#define COMMA 295
+#define OP 296
+#define CP 297
+#define OB 298
+#define CB 299
+#define LOR 300
+#define LAND 301
+#define QUOTE 302
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -147,7 +151,7 @@ union YYSTYPE
 
 	char* txt;
 
-#line 151 "y.tab.h"
+#line 155 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

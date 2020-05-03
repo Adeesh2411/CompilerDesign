@@ -8,6 +8,7 @@
     int lineNo =1;
     int scope = 0;
     int Bscope =0;
+    int cntBracket = 0;
     extern int Gscope;
     extern char curToken[100];
     extern char prevToken[100];
@@ -73,7 +74,8 @@ End   \*\/
 "void"      {yylval.txt=strdup(yytext);generateToken("void","keyword",-1);return VOID;}
 "return"    {yylval.txt=strdup(yytext);generateToken("return","keyword",-1);return RETURN;}
 "double"    {yylval.txt=strdup(yytext);generateToken("double","keyword",-1);return DOUBLE; }
-
+"printf"    {yylval.txt=strdup(yytext);generateToken("printf","keyword",-1);return PRINTF;}
+""\"        {yylval.txt=strdup(yytext);generateToken("doubleQuotes","punc",-1);return QUOTE;}
 
 ";"     {yylval.txt=strdup(yytext);generateToken(";","punc",-1);strcpy(prevToken, curToken);strcpy(curToken, ""); exprFlag = false; 
         return SEMICOLON;}
@@ -92,6 +94,7 @@ End   \*\/
             yylval.txt=strdup(yytext);
             scope--;
             Gscope--;
+            cntBracket++;
             if(scope == 0) Bscope++;
             generateToken("}","punc",-1);
             return CB;

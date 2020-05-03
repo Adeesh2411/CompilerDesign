@@ -38,6 +38,7 @@ void insert(char *type, char* name, char *value,int flag ){
             arr[k-1].lineNO = lineNo;
 
             arr[k-1].Bscope = Bscope;
+            arr[k-1].cntBracket = cntBracket;
             arr[k-1].scope = scope;
             if(scope == 0){
                 arr[k-1].Gscope = 1;
@@ -51,12 +52,11 @@ void insert(char *type, char* name, char *value,int flag ){
         }
         else {
             --k;
-            printf("=>ERROR : Multiple declarations of \'%s\' in line No %d\n",name,lineNo);
+            printf("ERROR : *Multiple declarations of \'%s\' in line No %d\n",name,lineNo);
         }
     }
     else if(flag == 2){
-        --k;
-        update(name, value);    
+         update(name, value);   
     }
     else if(flag == 3){
         if(!checkTableToInsert(name)){
@@ -65,7 +65,7 @@ void insert(char *type, char* name, char *value,int flag ){
             strcpy(arr[k-1].name, name);         
             strcpy(arr[k-1].value, value);
             arr[k-1].lineNO = lineNo;
-
+            arr[k-1].cntBracket = cntBracket;
             arr[k-1].Bscope = Bscope;
             arr[k-1].scope = scope;
             if(scope == 0){
@@ -86,7 +86,7 @@ void insert(char *type, char* name, char *value,int flag ){
             strcpy(arr[k-1].type, type);
             strcpy(arr[k-1].name, name);         
             strcpy(arr[k-1].value, value);
-        
+            arr[k-1].cntBracket = cntBracket;
             arr[k-1].lineNO = lineNo;
             arr[k-1].Bscope = Bscope;
             arr[k-1].scope = scope;
@@ -96,13 +96,45 @@ void insert(char *type, char* name, char *value,int flag ){
 
 void update(char *name, char* val){
     for(int i=0;i<k;i++){
-        if(!strcmp(arr[i].name, name) && arr[i].scope<=scope){
+        if(!strcmp(arr[i].name, name) && arr[i].scope==scope){
+            --k;
             strcpy(arr[i].value, val);
-            return;
+            return ;//arr[i].type;
+        }
+        else if(!strcmp(arr[i].name, name) && arr[i].scope<scope){
+            strcpy(arr[k-1].type, GetType(name, val));
+            strcpy(arr[k-1].name, name);         
+            strcpy(arr[k-1].value, val);
+            arr[k-1].cntBracket = cntBracket;
+            arr[k-1].lineNO = lineNo;
+
+            arr[k-1].Bscope = Bscope;
+            arr[k-1].scope = scope;
+            if(scope == 0){
+                arr[k-1].Gscope = 1;
+                Gscope = 1;
+            }
+            else{
+                arr[k-1].Gscope = 0;
+                Gscope = 0;
+            }
+            return;   
+        }
+    }
+    //printf("Warning : Nothing to Update\n");
+    return ;
+}
+
+
+char *GetType(char *name, char *val){
+    for(int i=0;i<k;i++){
+        if(!strcmp(arr[i].name, name) && arr[i].scope<=scope){
+            //strcpy(arr[i].value, val);
+            return arr[i].type;
         }
     }
     printf("Warning : Nothing to Update\n");
-    return;
+    return NULL;
 }
 
 int checkTableToInsert(char *name){
@@ -112,10 +144,12 @@ int checkTableToInsert(char *name){
     for(int i=0;i<k;i++){
         if(!strcmp(arr[i].name,name)){
             
-            if(arr[i].Gscope == Gscope){ // check for clash in global variable 
+            if(arr[i].Gscope == Gscope && arr[i].cntBracket == cntBracket){ // check for clash in global variable 
+                //printf("scope = %d\n",cntBracket);
                 return 1;
             }
-            if(scope == arr[i].scope && arr[i].Bscope == Bscope){ //clash in local scope
+            if(scope == arr[i].scope && arr[i].Bscope == Bscope && arr[i].cntBracket == cntBracket){ //clash in local scope
+                //printf("scope = %d\n",arr[i].cntBracket);
                 return 1;
             }
            
@@ -367,6 +401,15 @@ char *cat(char *one, int two){
     return tempArr;
 }
 
+char *cat_once(char *one, int two){
+    char tt[30];
+    sprintf(tt, "_(%d)",two );
+    strcpy(tempArr,  one);
+    strcat(tempArr, tt);
+    return tempArr;
+}
+
+
 void CreateExprNode(char *token,char *par){
     if(token == NULL) return;
     char *temp = token;
@@ -426,7 +469,14 @@ char *cat1(char *s, int w){
     strcat(tempArr4, tt);
     return tempArr4;
 }
-  
+ 
+char *cat1_once(char *s, int w){
+    char tt[30];
+    sprintf(tt, "_(%d)",w );
+    strcpy(tempArr4,  s);
+    strcat(tempArr4, tt);
+    return tempArr4;
+} 
 
 char *cat5(char *s, int w){
     memset(tempArr4,'\0',sizeof(tempArr4));
@@ -455,6 +505,7 @@ char *cat7(char *s, int w){
     strcat(tempArr6, tt);
     return tempArr6;
 }
+
 
 
 bool isOp(char *temp){
@@ -505,15 +556,15 @@ void AssignExprLinkHandle(int start, char *var){
                     visit[localK] = true;
                     if(nLinkExpr == 1){
                         if(isOp(exprLink[localK]->name)){
-                                strcpy(one, cat1("t", i));
-                                strcpy(two, cat("t",localK));
+                                strcpy(one, cat1_once("t", i));
+                                strcpy(two, cat_once("t",localK));
                                 strcpy(three, exprLink[i]->name);
                                 
                                 fprintf(IcodeFile, "%d. %s = %s %s",lineNo, one, two, exprLink[i]->name);
                             
                             }
                         else{
-                                strcpy(one, cat1("t", i));
+                                strcpy(one, cat1_once("t", i));
                                 strcpy(two, exprLink[localK]->name);
                                 strcpy(three, exprLink[i]->name);
                                 fprintf(IcodeFile, "%d. %s = %s %s",lineNo, one, exprLink[localK]->name, exprLink[i]->name);
@@ -522,7 +573,7 @@ void AssignExprLinkHandle(int start, char *var){
                     }
                     else{
                         if(isOp(exprLink[localK]->name)){
-                            strcpy(four, cat("t", localK));
+                            strcpy(four, cat_once("t", localK));
                             fprintf(IcodeFile, " %s\n",four);
                         }
                         else{
@@ -555,10 +606,11 @@ void AssignExprLinkHandle(int start, char *var){
              
     }
     if(!check)
-        fprintf(IcodeFile, "%d. %s = %s\n\n",lineNo, var, cat1("t",expL-1));
-    else
-        fprintf(IcodeFile, "%d. %s = %s\n\n",lineNo, var, exprLink[expL-1]->name);
-    
+        fprintf(IcodeFile, "%d. (Mem)%s = %s\n\n",lineNo, var, cat1_once("t",expL-1));
+    else{
+        fprintf(IcodeFile, "%d. %s = %s\n",lineNo, cat1_once("t",expL-1), exprLink[expL-1]->name);
+        fprintf(IcodeFile, "%d. (Mem)%s = %s\n\n",lineNo, var, cat1_once("t",expL-1));
+    }
 }
 
 
