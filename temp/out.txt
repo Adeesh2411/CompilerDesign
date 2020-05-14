@@ -5,7 +5,9 @@ line no	type	name	value	bscope	scope	Gscope
 6,int,x,100,0,1,0
 7,TEMP,t_(8),20.000000,0,1,0
 7,int,y,20,0,1,0
-9,int,i,0,0,1,0
-10,int,x,10,0,2,0
-14,int,x,99,0,2,0
-21,int::func,main,--,1,0,1
+15,int,i,0,0,1,0
+16,int,x,10,0,2,0
+20,int,x,99,0,2,0
+27,int::func,main,--,1,0,1
+30,int,x,10,1,1,0
+31,float::func,getSum,--,2,0,1

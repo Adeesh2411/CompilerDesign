@@ -63,6 +63,8 @@ End   \*\/
 "else"      {yylval.txt=strdup(yytext);generateToken("else","keyword",-1);return ELSE;}
 
 
+"%"         {yylval.txt = strdup(yytext); return PER;}
+
 "break"     {yylval.txt=strdup(yytext);generateToken("break","keyword",-1);return BREAK;}
 "char"      {yylval.txt=strdup(yytext);generateToken("char","keyword",-1);return CHAR;}
 "int"       {yylval.txt=strdup(yytext);generateToken("int","keyword",-1);return INT;}

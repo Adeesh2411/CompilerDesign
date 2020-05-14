@@ -6,6 +6,12 @@ int main(){
     int x=10;
     int y=x+10; // remove this for optimisation
     x=100;
+    
+    printf("adeesh %d",x);
+    printf("adeesh %d",x);
+    printf("adeesh %d",x);
+    printf("adeesh %d",x);
+    printf("adeesh %d",x);
     for(int i=0;i<20;i++){
         x=10;
     }
@@ -20,4 +26,7 @@ int main(){
 
 }
 
+float getSum(){
+    int x=10;
+}
 

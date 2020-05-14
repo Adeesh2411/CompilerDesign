@@ -9,6 +9,7 @@ mapR={} #actual : Rnum
 branch = {'<=':'BLE', '>=':'BGE','<':'BLT', '>':'BGT', '!=':'BNE', '==':"BEQ"}
 operate ={'*':'MUL', '+':'ADD', '-':'SUB', '/':'DIV'}
 x=1
+stringNo = 1
 
 startingAddr = 999
 
@@ -45,7 +46,7 @@ def binaryOp(part):
     if(num[0].isnumeric()):
         temp = getFreeR()
         free1 = "R"+str(temp)
-        print(getHex() + "\t: MOV "+free1+", #"+num[0])        
+        print(getHex() + "\t:\tMOV "+free1+", #"+num[0])        
         R[temp] = num[0]
 
     else:
@@ -64,7 +65,7 @@ def binaryOp(part):
     if(num[2].isnumeric()):
         temp = getFreeR()
         free2 = "R"+str(temp)
-        print(getHex() + "\t: MOV R"+str(temp)+", #"+num[2])
+        print(getHex() + "\t:\tMOV R"+str(temp)+", #"+num[2])
         R[temp] = num[2]
     else:
         free2 = mapR[num[2]]
@@ -83,7 +84,7 @@ def binaryOp(part):
 
     R[freeRegister] = num[2]
     mapR[rhs.strip()] = "R"+str(freeRegister)
-    print(getHex() + "\t: "+operate[num[1]] + " R"+str(freeRegister) +  ", "+free1 + ", "+free2)
+    print(getHex() + "\t:\t"+operate[num[1]] + " R"+str(freeRegister) +  ", "+free1 + ", "+free2)
     
     
     
@@ -98,11 +99,11 @@ def unaryOp(part):
     if val.isnumeric():
         temp = getFreeR()
         free = "R"+str(temp)
-        print(getHex() + "\t: MOV "+free+", #"+str(val))
+        print(getHex() + "\t:\tMOV "+free+", #"+str(val))
         mapR[name] = free
         R[temp] = val
         if "(Mem)" in name:
-            print(getHex() + "\t: STR "+free+", ["+name[5:]+"]")    
+            print(getHex() + "\t:\tSTR "+free+", ["+name[5:]+"]")    
         
     else:
         free = mapR[val]
@@ -120,11 +121,11 @@ def unaryOp(part):
             
              
         if "(Mem)" in name:
-            print(getHex() + "\t: STR "+free+", ["+name[5:]+"]")
+            print(getHex() + "\t:\tSTR "+free+", ["+name[5:]+"]")
         else:
             temp = getFreeR()
             cur = "R"+str(temp)
-            print(getHex() + "\t: MOV "+cur+", "+free)
+            print(getHex() + "\t:\tMOV "+cur+", "+free)
             R[temp] = val
             mapR[name] = cur
      
@@ -133,17 +134,36 @@ def unaryOp(part):
 if __name__ =="__main__": 
     for line in lines:
         visit = False;
-        
-        
+        if "print" in line:
+            start = line.index("(")+1;
+            end = line.index(")");
+            print(getHex()+"\t:\t"+"string"+str(stringNo)+ ":")
+            print("\t\t .ascii \"" +line[start:end].strip() +"\"")
+            if Free[1] == 1:
+                print(getHex()+"\t:\t"+"LDR R1, = string"+str(stringNo))
+                print(getHex()+"\t:\t"+"SWI 0")
+                Free[1] =0
+            else:
+                temp = getFreeR()
+                cur = "R1"
+                free = "R"+str(temp)
+                print(getHex() + "\t:\tMOV "+free+", "+cur)
+                print(getHex() + "\t:\t"+"LDR R1, "+"="+"string"+str(stringNo))
+                print(getHex() + "\t:\t"+"SWI 0")
+                Free[1] = 1
+            stringNo+=1;
+            continue
+            
+            
         if line[:4] == "goto":
-            print(getHex() + "\t: B "+line[4:].strip())
+            print(getHex() + "\t:\tB "+line[4:].strip())
         if ':' in line:
             label = line.split(':')
             for i in range(len(label)-1):
-                print(getHex() + "\t: "+label[i].strip() + " : ")
+                print(getHex() + "\t:\t"+label[i].strip() + " : ")
 
         if ":" in line and 'goto' in line and line.split(':')[1].strip()[:4] == 'goto':
-            print(getHex() + "\t: " + "B "+line.split(':')[1].strip()[4:])
+            print(getHex() + "\t:\t" + "B "+line.split(':')[1].strip()[4:])
         
         if "if" in  line:
             start = line.index("(")
@@ -160,7 +180,7 @@ if __name__ =="__main__":
                 temp = getFreeR()
                 cur1 = "R"+str(temp)                
                 R[temp] = spl[0].strip()
-                print(getHex() + "\t: MOV "+cur1+", #"+spl[0].strip())
+                print(getHex() + "\t:\tMOV "+cur1+", #"+spl[0].strip())
                 #print("CMP "+cur1, end = "")
             else:
                 val =spl[0].strip()
@@ -182,7 +202,7 @@ if __name__ =="__main__":
                 temp = getFreeR()
                 cur2 = "R"+str(temp)                
                 R[temp] = spl[0].strip()
-                print(getHex() + "\t: MOV "+cur2+", #"+spl[1].strip())
+                print(getHex() + "\t:\tMOV "+cur2+", #"+spl[1].strip())
             else:
                 val = spl[1].strip()
                 free = mapR[val]
@@ -197,9 +217,9 @@ if __name__ =="__main__":
                     mapR[val] = cur
                     free = mapR[val]         
                 cur2= free    
-            print(getHex() + "\t: CMP "+cur1+", "+cur2)
+            print(getHex() + "\t:\tCMP "+cur1+", "+cur2)
             ind = line.index("goto")+5
-            print(getHex() + "\t: "+branch[factor]+" "+line[ind:].strip())
+            print(getHex() + "\t:\t"+branch[factor]+" "+line[ind:].strip())
         #arithmetic opeartion
         if '=' in line and visit == False:
             part = line.split('=')
@@ -209,7 +229,7 @@ if __name__ =="__main__":
                 
             elif temp == 1:
                 unaryOp(part)
-    print("SWI 0x11")
+    print(getHex()+"\t:\tSWI 0x11")
                      
             
             

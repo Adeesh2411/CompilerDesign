@@ -27,6 +27,9 @@
     char prevToken[100];
     char exprToken[100];
 
+    char print[1000];
+    bool printFlag = false;
+
     extern bool exprFlag;
     extern int exprCount;
     bool loopFlag = false;

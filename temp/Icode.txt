@@ -11,19 +11,29 @@
 8. t_(9) = 100
 8. (Mem)x = t_(9)
 
+10. print(adeesh)
+
+11. print(adeesh)
+
+12. print(adeesh)
+
+13. print(adeesh)
+
+14. print(adeesh)
+
 L0 : i = 0
 L1 : if (0 < 20) goto L2
 goto L3
-L2 : 10. t_(13) = 10
-10. (Mem)x = t_(13)
+L2 : 16. t_(13) = 10
+16. (Mem)x = t_(13)
 
-11. T_ = i - 0
-11. i = T_
+17. T_ = i - 0
+17. i = T_
 goto L1
 L3 : L4 : if(1<2) goto L6
 goto L5
-L6 : 14. t_(16) = 99
-14. (Mem)x = t_(16)
+L6 : 20. t_(16) = 99
+20. (Mem)x = t_(16)
 
 goto L4
 L5:
@@ -31,3 +41,6 @@ L7 : if(1<2) goto L9
 goto L8
 L9 : goto L7
 L8:
+30. t_(19) = 10
+30. (Mem)x = t_(19)
+

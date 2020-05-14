@@ -11,7 +11,7 @@
 %token<txt> EQ LE GE AND OR XOR ASSIGN L G NEQ
 %token<txt> IF ELSE SWITCH BREAK WHILE CASE DEFAULT FOR 
 %token<txt> ADD SUB MUL DIV INC DEC PRINTF
-%token<txt> SEMICOLON COMMA 
+%token<txt> SEMICOLON COMMA  PER
 %token<txt> OP CP OB CB LOR LAND QUOTE
 %type<txt> exp exp1 lhs exp2 condExp condExp1
 %type<txt> type assignList variable funcVariable ForName
@@ -58,20 +58,37 @@ nextPart
         CreateNode("nextPart", "function", 4);
         CreateNode("nextPart", "nextPart", 2);
     }
-    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
-    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
-    |PRINTF OP PvarXp CP SEMICOLON nextPart
     |
     ;
 
 pexp
-    :variable pexp
+    :variable pexp {
+        if(!printFlag ){
+            char tem[1000];
+            strcpy(tem, $1);
+            strcat(tem,print);
+            strcpy(print, tem);
+        }
+        printFlag = false;
+    }
+    |PER dude pexp
     |
     ;
+    
+dude
+    :{printFlag = true;}
+    ;
+    
 PvarXp
     :variable{
         if(!checkTableToAccess($1))
             printf("Error : %s is undefined\n",$1);
+        else{
+         char tem[1000];
+        strcpy(tem, $1);
+        strcat(tem,print);
+        strcpy(print, tem);   
+        }
     }
     ;
     
@@ -546,9 +563,15 @@ statements
         CreateNode("Statement", "Statement", 2);
         CreateNode("Statement", "ifElse", 7);
     }
-    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
-    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
-    |PRINTF OP PvarXp CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON dduummy stateTemp 
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON dduummy stateTemp 
+    |PRINTF OP PvarXp CP SEMICOLON dduummy stateTemp 
+    ;
+
+dduummy
+    :{
+        fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); memset(print, '\0', sizeof(print));
+    }
     ;
 
 loopStatement
@@ -575,9 +598,9 @@ loopStatement
         CreateNode(cat("LoopStatement",loopval), cat("LoopStatement",loopval), 2);
         CreateNode(cat("LoopStatement",loopval), "ifElse", 7);
     }
-    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
-    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
-    |PRINTF OP PvarXp CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON loopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON loopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP PvarXp CP SEMICOLON loopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
     |
     ;
     
@@ -602,9 +625,9 @@ wloopStatement
         CreateNode(cat("wLoopStatement",loopval), cat("wLoopStatement",loopval), 2);
         CreateNode(cat("wLoopStatement",loopval), "ifElse", 7);
     }
-    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
-    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
-    |PRINTF OP PvarXp CP SEMICOLON nextPart
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON wloopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON wloopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP PvarXp CP SEMICOLON wloopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
     |
     ;
     
@@ -629,9 +652,9 @@ ifloopStatement
         CreateNode(cat("ifLoopStatement",loopval), cat("ifLoopStatement",loopval), 2);
         CreateNode(cat("ifLoopStatement",loopval), "ifElse", 7);
     }
-    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON nextPart
-    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON nextPart
-    |PRINTF OP PvarXp CP SEMICOLON nextPart    
+    |PRINTF OP QUOTE pexp QUOTE CP SEMICOLON ifloopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP QUOTE pexp QUOTE COMMA CommaVar CP SEMICOLON ifloopStatement {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
+    |PRINTF OP PvarXp CP SEMICOLON ifloopStatement  {fprintf(IcodeFile, "%d. print(%s)\n\n",lineNo,print); }
     |
     ;    
     

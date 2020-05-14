@@ -1,0 +1,78 @@
+0x3e8	: MOV R0, #2
+0x3e9	: MOV R1, #10
+0x3ea	: MUL R2, R0, R1
+0x3eb	: MOV R3, #1
+0x3ec	: ADD R4, R2, R3
+0x3ed	: STR R4, [global]
+0x3ee	: MOV R5, #10
+0x3ef	: STR R5, [x]
+0x3f0	: MOV R6, #10
+0x3f1	: MOV R7, #10
+0x3f2	: ADD R8, R6, R7
+0x3f3	: STR R8, [y]
+0x3f4	: MOV R9, #100
+0x3f5	: STR R9, [x]
+0x3f6	: string1:
+	 .ascii "adeesh"
+0x3f7	: MOV R10, R1
+0x3f8	: LDR R1, =string1
+0x3f9	: SWI 0
+0x3fa	: string2:
+	 .ascii "adeesh"
+0x3fb	: LDR R1, = string2
+0x3fc	: SWI 0
+0x3fd	: string3:
+	 .ascii "adeesh"
+0x3fe	: MOV R11, R1
+0x3ff	: LDR R1, =string3
+0x400	: SWI 0
+0x401	: string4:
+	 .ascii "adeesh"
+0x402	: LDR R1, = string4
+0x403	: SWI 0
+0x404	: string5:
+	 .ascii "adeesh"
+0x405	: MOV R12, R1
+0x406	: LDR R1, =string5
+0x407	: SWI 0
+0x408	: L0 : 
+0x409	: MOV R1, #0
+0x40a	: L1 : 
+//Note : registers are empty !! Moving to stack
+0x40b	: MOV R0, #0
+0x40c	: MOV R1, #20
+0x40d	: CMP R0, R1
+0x40e	: BLT L2
+0x40f	: B L3
+0x410	: L2 : 
+0x411	: MOV R2, #10
+0x412	: STR R2, [x]
+//Note : Getting value of register R1 from Stack
+0x413	: MOV R4, #0
+0x414	: SUB R5, R3, R4
+0x415	: MOV R6, R5
+0x416	: B L1
+0x417	: L3 : 
+0x418	: L4 : 
+0x419	: MOV R7, #1
+0x41a	: MOV R8, #2
+0x41b	: CMP R7, R8
+0x41c	: BLT L6
+0x41d	: B L5
+0x41e	: L6 : 
+0x41f	: MOV R9, #99
+0x420	: STR R9, [x]
+0x421	: B L4
+0x422	: L5 : 
+0x423	: L7 : 
+0x424	: MOV R10, #1
+0x425	: MOV R11, #2
+0x426	: CMP R10, R11
+0x427	: BLT L9
+0x428	: B L8
+0x429	: L9 : 
+0x42a	: B  L7
+0x42b	: L8 : 
+0x42c	: MOV R12, #10
+0x42d	: STR R12, [x]
+SWI 0x11
