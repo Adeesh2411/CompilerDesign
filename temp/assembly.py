@@ -6,7 +6,7 @@ Free = [1,1,1,1,1,1,1,1,1,1,1,1,1]
 stack = []
 lines = f.readlines()
 mapR={} #actual : Rnum
-branch = {'<':'BLT', '>':'BGT', '!=':'BNE', '==':"BEQ", '<=':'BLE', '>=':'BGE'}
+branch = {'<=':'BLE', '>=':'BGE','<':'BLT', '>':'BGT', '!=':'BNE', '==':"BEQ"}
 operate ={'*':'MUL', '+':'ADD', '-':'SUB', '/':'DIV'}
 x=1
 
@@ -132,18 +132,24 @@ def unaryOp(part):
     
 if __name__ =="__main__": 
     for line in lines:
+        visit = False;
+        
+        
         if line[:4] == "goto":
             print(getHex() + "\t: B "+line[4:].strip())
         if ':' in line:
             label = line.split(':')
             for i in range(len(label)-1):
                 print(getHex() + "\t: "+label[i].strip() + " : ")
-                
+
+        if ":" in line and 'goto' in line and line.split(':')[1].strip()[:4] == 'goto':
+            print(getHex() + "\t: " + "B "+line.split(':')[1].strip()[4:])
+        
         if "if" in  line:
             start = line.index("(")
             end = line.index(")")
             val1 = line[start+1:end]
-            
+            visit =True
             for i in branch:
                 if i in val1:
                     factor = i
@@ -195,7 +201,7 @@ if __name__ =="__main__":
             ind = line.index("goto")+5
             print(getHex() + "\t: "+branch[factor]+" "+line[ind:].strip())
         #arithmetic opeartion
-        if '=' in line:
+        if '=' in line and visit == False:
             part = line.split('=')
             temp = len(part[1].strip().split(' ')) 
             if temp == 3:
@@ -203,6 +209,7 @@ if __name__ =="__main__":
                 
             elif temp == 1:
                 unaryOp(part)
+    print("SWI 0x11")
                      
             
             

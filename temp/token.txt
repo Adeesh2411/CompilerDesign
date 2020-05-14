@@ -61,4 +61,12 @@
 <99 Numeric>
 <; punc>
 <} punc>
+<while keyword>
+<( punc>
+<1 Numeric>
+<< L>
+<2 Numeric>
+<) punc>
+<{ punc>
+<} punc>
 <} punc>

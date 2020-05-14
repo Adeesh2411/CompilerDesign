@@ -27,3 +27,7 @@ L6 : 14. t_(16) = 99
 
 goto L4
 L5:
+L7 : if(1<2) goto L9
+goto L8
+L9 : goto L7
+L8:

@@ -8,4 +8,4 @@ line no	type	name	value	bscope	scope	Gscope
 9,int,i,0,0,1,0
 10,int,x,10,0,2,0
 14,int,x,99,0,2,0
-18,int::func,main,--,1,0,1
+21,int::func,main,--,1,0,1

@@ -14,6 +14,9 @@ int main(){
         int x = 99;
     }
     
+    while(1<2){
+    
+    }
 
 }
 
