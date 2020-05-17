@@ -1,0 +1,13 @@
+Tree node structure
+
+	typedef struct node{
+	
+	    char parent[50];
+	    char name[50];
+	    struct node *childArrLink[20];
+	    int nLink;
+	    int temp;
+	    int level;
+	    bool isT;
+	
+	}node;

@@ -45,6 +45,11 @@
         double Dvalue;
         int Ivalue;
     }tempV;
+    
+    
+    
+    
+    
     // Symbol table
 	struct table
 	{
@@ -59,6 +64,9 @@
 		int Gscope;
 		int cntBracket;
 	}arr[500];
+	
+	
+	
 	
 	
 	
@@ -109,6 +117,11 @@
 	int sp = 0;
 	
 	int interNo = 0;
+
+
+
+
+
 	
 	typedef struct node{
 	    char parent[50];
@@ -119,6 +132,12 @@
 	    int level;
 	    bool isT;
 	}node;
+
+
+
+
+
+
 
 	int tl=0;
 	node* treeLink[2000];//all the nodes are attached here

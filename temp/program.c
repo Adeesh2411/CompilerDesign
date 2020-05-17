@@ -2,31 +2,26 @@
 #include<stdio.h>
 
 int global=1+10*2;
+
 int main(){
     int x=10;
-    int y=x+10; // remove this for optimisation
+    //int y=x+10; // remove this for optimisation
     x=100;
+    int b=100;
+    int az = b+x*90-12;
     
-    printf("adeesh %d",x);
-    printf("adeesh %d",x);
-    printf("adeesh %d",x);
-    printf("adeesh %d",x);
-    printf("adeesh %d",x);
+    printf("CompilerDesign project");
+    
     for(int i=0;i<20;i++){
-        x=10;
+        int z=10;
     }
     
     while(1<2){
-        int x = 99;
+        int a = 99;
     }
-    
-    while(1<2){
-    
-    }
-
 }
 
 float getSum(){
-    int x=10;
+    int ab=10;
 }
 

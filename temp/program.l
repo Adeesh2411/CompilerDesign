@@ -4,7 +4,6 @@
 #include<string.h>
 #include "y.tab.h"
 #include<stdbool.h>
-
     int lineNo =1;
     int scope = 0;
     int Bscope =0;

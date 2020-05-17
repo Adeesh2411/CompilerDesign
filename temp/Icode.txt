@@ -2,45 +2,38 @@
 4. t_(4) = t_(3) + 1
 4. (Mem)global = t_(4)
 
-6. t_(5) = 10
-6. (Mem)x = t_(5)
+7. t_(5) = 10
+7. (Mem)x = t_(5)
 
-7. t_(8) = 10 + 10
-7. (Mem)y = t_(8)
+9. t_(6) = 100
+9. (Mem)x = t_(6)
 
-8. t_(9) = 100
-8. (Mem)x = t_(9)
+10. t_(7) = 100
+10. (Mem)b = t_(7)
 
-10. print(adeesh)
+11. t_(11) = 90 * 100
+11. t_(12) = t_(11) + 100
+11. t_(14) = 12 - t_(12)
+11. (Mem)az = t_(14)
 
-11. print(adeesh)
-
-12. print(adeesh)
-
-13. print(adeesh)
-
-14. print(adeesh)
+12. print(CompilerDesignproject)
 
 L0 : i = 0
 L1 : if (0 < 20) goto L2
 goto L3
-L2 : 16. t_(13) = 10
-16. (Mem)x = t_(13)
+L2 : 15. t_(18) = 10
+15. (Mem)z = t_(18)
 
-17. T_ = i - 0
-17. i = T_
+16. T_ = i - 0
+16. i = T_
 goto L1
 L3 : L4 : if(1<2) goto L6
 goto L5
-L6 : 20. t_(16) = 99
-20. (Mem)x = t_(16)
+L6 : 19. t_(21) = 99
+19. (Mem)a = t_(21)
 
 goto L4
 L5:
-L7 : if(1<2) goto L9
-goto L8
-L9 : goto L7
-L8:
-30. t_(19) = 10
-30. (Mem)x = t_(19)
+24. t_(22) = 10
+24. (Mem)ab = t_(22)
 
