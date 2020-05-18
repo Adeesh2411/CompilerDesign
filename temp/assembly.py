@@ -155,9 +155,15 @@ if __name__ =="__main__":
                 temp = getFreeR()
                 cur = "R1"
                 free = "R"+str(temp)
+                #update the value in mapR
+                for key in mapR:
+                    if mapR[key] == 'R1':
+                        mapR[key] = free
+               
                 print(getHex(4) + "\t:\tMOV "+free+", "+cur)
                 print(getHex(4) + "\t:\t"+"LDR R1, "+"="+"string"+str(stringNo))
                 print(getHex(4) + "\t:\t"+"SWI 0")
+                
                 Free[1] = 1
             stringNo+=1;
             continue
