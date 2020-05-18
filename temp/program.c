@@ -11,9 +11,15 @@ int main(){
     int az = b+x*90-12;
     
     printf("CompilerDesign project");
-    
+    printf("someThing");
     for(int i=0;i<20;i++){
-        int z=10;
+        for(int i=0;i<10;i++){
+            int z=10;
+        }
+        while(12<1){
+            int ad=10;
+        }
+    
     }
     
     while(1<2){

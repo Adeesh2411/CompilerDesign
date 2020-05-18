@@ -8,9 +8,11 @@ line no	type	name	value	bscope	scope	Gscope
 11,TEMP,t_(12),9100.000000,0,1,0
 11,TEMP,t_(14),-9088.000000,0,1,0
 11,int,az,9088,0,1,0
-14,int,i,0,0,1,0
-15,int,z,10,0,2,0
-19,int,a,99,0,2,0
-21,int::func,main,--,1,0,1
-24,int,ab,10,1,1,0
-25,float::func,getSum,--,2,0,1
+15,int,i,0,0,1,0
+16,int,i,0,0,2,1
+17,int,z,10,0,3,0
+20,int,ad,10,0,3,0
+26,int,a,99,0,2,0
+28,int::func,main,--,1,0,1
+31,int,ab,10,1,1,0
+32,float::func,getSum,--,2,0,1
